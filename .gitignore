@@ -1,0 +1,19 @@
+# -------------------------------------------------------------------
+# Visual Studio / .NET Specific Files and Folders
+# -------------------------------------------------------------------
+
+# 1. Project/Solution User Options and Cache (Crucial to ignore)
+# ===============================================================
+*.user
+*.suo
+*.sln.docstates
+*.vsp
+*.vspx
+*.vsmdi
+*.scc
+
+# Ignore the Visual Studio solution user options/cache folder (.vs)
+# This folder stores temporary settings specific to your environment.
+# Ignoring it prevents permission denied errors.
+.vs/
+*.vsidx
