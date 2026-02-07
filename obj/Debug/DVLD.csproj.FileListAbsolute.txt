@@ -102,15 +102,13 @@ C:\Users\Acer\Dropbox\Personal\Advices\2021\19 - Full Real Project\Project\DVLD\
 C:\Users\Acer\Dropbox\Personal\Advices\2021\19 - Full Real Project\Project\DVLD\obj\Debug\DVLD.Applications.Detain_License.frmDetainLicenseApplication.resources
 C:\Users\Acer\Dropbox\Personal\Advices\2021\19 - Full Real Project\Project\DVLD\obj\Debug\DVLD.Applications.Rlease_Detained_License.frmReleaseDetainedLicenseApplication.resources
 C:\Users\Acer\Dropbox\Personal\Advices\2021\19 - Full Real Project\Project\DVLD\obj\Debug\DVLD.Applications.Rlease_Detained_License.frmListDetainedLicenses.resources
-D:\programmer\for visual community\Full Real Project, Course 19\DVLD Hadhood Solution\DVLD Project Final\Project\DVLD\obj\Debug\DVLD.csproj.AssemblyReference.cache
-D:\programmer\for visual community\Full Real Project, Course 19\DVLD Hadhood Solution\DVLD Project Final\Project\DVLD\obj\Debug\DVLD.exe
-D:\programmer\for visual community\Full Real Project, Course 19\DVLD Hadhood Solution\DVLD Project Final\Project\DVLD\obj\Debug\DVLD.pdb
 D:\programmer\for visual community\Full Real Project, Course 19\DVLD Hadhood Solution\DVLD Project Final\Project\DVLD\bin\Debug\DVLD.exe
 D:\programmer\for visual community\Full Real Project, Course 19\DVLD Hadhood Solution\DVLD Project Final\Project\DVLD\bin\Debug\DVLD.pdb
 D:\programmer\for visual community\Full Real Project, Course 19\DVLD Hadhood Solution\DVLD Project Final\Project\DVLD\bin\Debug\DVLD_Buisness.dll
 D:\programmer\for visual community\Full Real Project, Course 19\DVLD Hadhood Solution\DVLD Project Final\Project\DVLD\bin\Debug\DVLD_DataAccess.dll
 D:\programmer\for visual community\Full Real Project, Course 19\DVLD Hadhood Solution\DVLD Project Final\Project\DVLD\bin\Debug\DVLD_Buisness.pdb
 D:\programmer\for visual community\Full Real Project, Course 19\DVLD Hadhood Solution\DVLD Project Final\Project\DVLD\bin\Debug\DVLD_DataAccess.pdb
+D:\programmer\for visual community\Full Real Project, Course 19\DVLD Hadhood Solution\DVLD Project Final\Project\DVLD\obj\Debug\DVLD.csproj.AssemblyReference.cache
 D:\programmer\for visual community\Full Real Project, Course 19\DVLD Hadhood Solution\DVLD Project Final\Project\DVLD\obj\Debug\DVLD.Applications.Rlease_Detained_License.frmListDetainedLicenses.resources
 D:\programmer\for visual community\Full Real Project, Course 19\DVLD Hadhood Solution\DVLD Project Final\Project\DVLD\obj\Debug\DVLD.Applications.Rlease_Detained_License.frmReleaseDetainedLicenseApplication.resources
 D:\programmer\for visual community\Full Real Project, Course 19\DVLD Hadhood Solution\DVLD Project Final\Project\DVLD\obj\Debug\DVLD.Applications.Detain_License.frmDetainLicenseApplication.resources
@@ -157,3 +155,5 @@ D:\programmer\for visual community\Full Real Project, Course 19\DVLD Hadhood Sol
 D:\programmer\for visual community\Full Real Project, Course 19\DVLD Hadhood Solution\DVLD Project Final\Project\DVLD\obj\Debug\DVLD.csproj.GenerateResource.cache
 D:\programmer\for visual community\Full Real Project, Course 19\DVLD Hadhood Solution\DVLD Project Final\Project\DVLD\obj\Debug\DVLD.csproj.CoreCompileInputs.cache
 D:\programmer\for visual community\Full Real Project, Course 19\DVLD Hadhood Solution\DVLD Project Final\Project\DVLD\obj\Debug\DVLD.csproj.Up2Date
+D:\programmer\for visual community\Full Real Project, Course 19\DVLD Hadhood Solution\DVLD Project Final\Project\DVLD\obj\Debug\DVLD.exe
+D:\programmer\for visual community\Full Real Project, Course 19\DVLD Hadhood Solution\DVLD Project Final\Project\DVLD\obj\Debug\DVLD.pdb

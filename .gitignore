@@ -4,6 +4,14 @@
 
 # 1. Project/Solution User Options and Cache (Crucial to ignore)
 # ===============================================================
+# Build results
+[Dd]ebug/
+[Rr]elease/
+bin/
+obj/
+*.exe
+*.dll
+*.pdb
 *.user
 *.suo
 *.sln.docstates
@@ -11,8 +19,6 @@
 *.vspx
 *.vsmdi
 *.scc
-*.bin
-*.obj
 
 # Ignore the Visual Studio solution user options/cache folder (.vs)
 # This folder stores temporary settings specific to your environment.
