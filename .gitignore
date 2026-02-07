@@ -11,6 +11,8 @@
 *.vspx
 *.vsmdi
 *.scc
+*.bin
+*.obj
 
 # Ignore the Visual Studio solution user options/cache folder (.vs)
 # This folder stores temporary settings specific to your environment.
