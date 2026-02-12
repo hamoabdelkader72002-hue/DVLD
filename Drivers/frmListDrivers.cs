@@ -8,6 +8,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -17,6 +18,7 @@ namespace DVLD.Drivers
     {
         private DataTable _dtAllDrivers;
 
+        private CancellationTokenSource _cts;
         public frmListDrivers()
         {
             InitializeComponent();
@@ -24,17 +26,33 @@ namespace DVLD.Drivers
 
         private void btnClose_Click(object sender, EventArgs e)
         {
+            _cts?.Cancel();
+            _cts?.Dispose();
             this.Close();
 
         }
 
-        private void frmListDrivers_Load(object sender, EventArgs e)
+        private async Task _Load()
         {
             cbFilterBy.SelectedIndex = 0;
-            _dtAllDrivers = clsDriver.GetAllDrivers();
+            _cts = new CancellationTokenSource();
+            try
+            {
+                _dtAllDrivers = await clsDriver.GetAllDrivers(_cts);
+            }
+            catch (OperationCanceledException)
+            {
+                MessageBox.Show("Operation was canceled.", "Info");
+                return;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error occurred: Failed Uploadin data", "Error");
+                return;
+            }
             dgvDrivers.DataSource = _dtAllDrivers;
             lblRecordsCount.Text = dgvDrivers.Rows.Count.ToString();
-            if (dgvDrivers.Rows.Count>0)
+            if (dgvDrivers.Rows.Count > 0)
             {
                 dgvDrivers.Columns[0].HeaderText = "Driver ID";
                 dgvDrivers.Columns[0].Width = 120;
@@ -54,7 +72,12 @@ namespace DVLD.Drivers
                 dgvDrivers.Columns[5].HeaderText = "Active Licenses";
                 dgvDrivers.Columns[5].Width = 150;
             }
-          
+        }
+
+        private async void frmListDrivers_Load(object sender, EventArgs e)
+        {
+
+            await _Load();
 
 
         }
@@ -129,13 +152,13 @@ namespace DVLD.Drivers
                 e.Handled = !char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar);
         }
 
-        private void showDetailsToolStripMenuItem_Click(object sender, EventArgs e)
+        private async void showDetailsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             int PersonID = (int)dgvDrivers.CurrentRow.Cells[1].Value;
             frmShowPersonInfo frm = new frmShowPersonInfo(PersonID);
             frm.ShowDialog();
             //refresh
-            frmListDrivers_Load(null, null);
+            await _Load();
 
         }
 

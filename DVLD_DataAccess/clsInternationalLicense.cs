@@ -9,6 +9,7 @@ using static DVLD_DataAccess.clsCountryData;
 using System.Net;
 using System.Security.Policy;
 using System.ComponentModel;
+using System.Threading;
 
 namespace DVLD_DataAccess
 {
@@ -75,7 +76,7 @@ namespace DVLD_DataAccess
                 return isFound;
             }
 
-         public static DataTable GetAllInternationalLicenses()
+         public static async Task<DataTable> GetAllInternationalLicenses(CancellationTokenSource cts)
             {
 
                 DataTable dt = new DataTable();
@@ -89,7 +90,7 @@ namespace DVLD_DataAccess
                 {
                     connection.Open();
 
-                    SqlDataReader reader = command.ExecuteReader();
+                    SqlDataReader reader = await command.ExecuteReaderAsync(cts.Token);
 
                     if (reader.HasRows)
 

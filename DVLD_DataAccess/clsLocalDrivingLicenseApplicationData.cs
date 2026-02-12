@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static System.Net.Mime.MediaTypeNames;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading;
 
 namespace DVLD_DataAccess
 {
@@ -119,7 +120,7 @@ namespace DVLD_DataAccess
             return isFound;
         }
 
-        public static DataTable GetAllLocalDrivingLicenseApplications()
+        public static async Task<DataTable> GetAllLocalDrivingLicenseApplications(CancellationTokenSource cts)
             {
 
                 DataTable dt = new DataTable();
@@ -136,7 +137,7 @@ namespace DVLD_DataAccess
                 {
                     connection.Open();
 
-                    SqlDataReader reader = command.ExecuteReader();
+                    SqlDataReader reader = await command.ExecuteReaderAsync(cts.Token);
 
                     if (reader.HasRows)
 

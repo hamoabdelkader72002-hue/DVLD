@@ -10,6 +10,7 @@ using System.Drawing;
 using System.Linq;
 using System.Security.Policy;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using static System.Net.Mime.MediaTypeNames;
@@ -18,6 +19,7 @@ namespace DVLD.Applications.International_License
 {
     public partial class frmListInternationalLicesnseApplications : Form
     {
+        CancellationTokenSource _cts;
         private DataTable _dtInternationalLicenseApplications;
 
         public frmListInternationalLicesnseApplications()
@@ -27,49 +29,74 @@ namespace DVLD.Applications.International_License
 
         private void btnClose_Click(object sender, EventArgs e)
         {
+            _cts?.Cancel();
+            _cts?.Dispose();
             this.Close();
         }
 
-        private void frmListInternationalLicesnseApplications_Load(object sender, EventArgs e)
+        private async Task _Load()
         {
-            _dtInternationalLicenseApplications = clsInternationalLicense.GetAllInternationalLicenses();
-            cbFilterBy.SelectedIndex= 0;
-
-            dgvInternationalLicenses.DataSource = _dtInternationalLicenseApplications;
-                   lblInternationalLicensesRecords.Text = dgvInternationalLicenses.Rows.Count.ToString();
-
-            if (dgvInternationalLicenses.Rows.Count > 0)
+            _cts = new CancellationTokenSource();
+            try
             {
-                dgvInternationalLicenses.Columns[0].HeaderText = "Int.License ID";
-                dgvInternationalLicenses.Columns[0].Width = 160;
+                _dtInternationalLicenseApplications = await clsInternationalLicense.GetAllInternationalLicenses(_cts);
+                cbFilterBy.SelectedIndex = 0;
 
-                dgvInternationalLicenses.Columns[1].HeaderText = "Application ID";
-                dgvInternationalLicenses.Columns[1].Width = 150;
+                dgvInternationalLicenses.DataSource = _dtInternationalLicenseApplications;
+                lblInternationalLicensesRecords.Text = dgvInternationalLicenses.Rows.Count.ToString();
 
-                dgvInternationalLicenses.Columns[2].HeaderText = "Driver ID";
-                dgvInternationalLicenses.Columns[2].Width = 130;
+                if (dgvInternationalLicenses.Rows.Count > 0)
+                {
+                    dgvInternationalLicenses.Columns[0].HeaderText = "Int.License ID";
+                    dgvInternationalLicenses.Columns[0].Width = 160;
 
-                dgvInternationalLicenses.Columns[3].HeaderText = "L.License ID";
-                dgvInternationalLicenses.Columns[3].Width = 130;
+                    dgvInternationalLicenses.Columns[1].HeaderText = "Application ID";
+                    dgvInternationalLicenses.Columns[1].Width = 150;
 
-                dgvInternationalLicenses.Columns[4].HeaderText = "Issue Date";
-                dgvInternationalLicenses.Columns[4].Width = 180;
+                    dgvInternationalLicenses.Columns[2].HeaderText = "Driver ID";
+                    dgvInternationalLicenses.Columns[2].Width = 130;
 
-                dgvInternationalLicenses.Columns[5].HeaderText = "Expiration Date";
-                dgvInternationalLicenses.Columns[5].Width = 180;
+                    dgvInternationalLicenses.Columns[3].HeaderText = "L.License ID";
+                    dgvInternationalLicenses.Columns[3].Width = 130;
 
-                dgvInternationalLicenses.Columns[6].HeaderText = "Is Active";
-                dgvInternationalLicenses.Columns[6].Width = 120;
+                    dgvInternationalLicenses.Columns[4].HeaderText = "Issue Date";
+                    dgvInternationalLicenses.Columns[4].Width = 180;
 
+                    dgvInternationalLicenses.Columns[5].HeaderText = "Expiration Date";
+                    dgvInternationalLicenses.Columns[5].Width = 180;
+
+                    dgvInternationalLicenses.Columns[6].HeaderText = "Is Active";
+                    dgvInternationalLicenses.Columns[6].Width = 120;
+
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                MessageBox.Show("Operation was canceled.", "Info");
+                return;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error occurred: Failed Uploadin data", "Error");
+                return;
             }
         }
 
-        private void btnNewApplication_Click(object sender, EventArgs e)
+
+        private async void frmListInternationalLicesnseApplications_Load(object sender, EventArgs e)
+        {
+
+            await _Load();
+
+
+        }
+
+        private async void btnNewApplication_Click(object sender, EventArgs e)
         {
             frmNewInternationalLicenseApplication frm = new frmNewInternationalLicenseApplication();
             frm.ShowDialog();
             //refresh
-            frmListInternationalLicesnseApplications_Load(null,null);
+            await _Load();
 
         }
 

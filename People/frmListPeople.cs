@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Security.Policy;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
@@ -17,18 +18,15 @@ namespace DVLD.People
 {
     public partial class frmListPeople : Form
     {
-
-      private static DataTable _dtAllPeople = clsPerson.GetAllPeople();
+        private CancellationTokenSource _cts;
+        private static DataTable _dtAllPeople;
         
         //only select the columns that you want to show in the grid
-      private DataTable _dtPeople = _dtAllPeople.DefaultView.ToTable(false, "PersonID", "NationalNo",
-                                                       "FirstName", "SecondName", "ThirdName", "LastName",
-                                                       "GendorCaption", "DateOfBirth", "CountryName",
-                                                       "Phone", "Email");
+        private DataTable _dtPeople;
 
-        private void _RefreshPeoplList()
+        private async Task _RefreshPeoplList()
         {
-            _dtAllPeople = clsPerson.GetAllPeople();
+            _dtAllPeople = await clsPerson.GetAllPeople(_cts);
             _dtPeople = _dtAllPeople.DefaultView.ToTable(false, "PersonID", "NationalNo",
                                                        "FirstName", "SecondName", "ThirdName", "LastName",
                                                        "GendorCaption", "DateOfBirth", "CountryName",
@@ -43,9 +41,23 @@ namespace DVLD.People
             InitializeComponent();
         }
 
-        private void frmListPeople_Load(object sender, EventArgs e)
+        private async void frmListPeople_Load(object sender, EventArgs e)
         {
-                 
+            _cts = new CancellationTokenSource();
+            try
+            {
+                await _RefreshPeoplList();
+            }
+            catch (OperationCanceledException)
+            {
+                MessageBox.Show("Operation was canceled.", "Info");
+                return;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error occurred: Failed Uploadin data", "Error");
+                return;
+            }
             dgvPeople.DataSource = _dtPeople;
             cbFilterBy.SelectedIndex = 0;
             lblRecordsCount.Text = dgvPeople.Rows.Count.ToString();
@@ -185,13 +197,26 @@ namespace DVLD.People
             frm.ShowDialog();
         }
 
-        private void editToolStripMenuItem_Click(object sender, EventArgs e)
+        private async void editToolStripMenuItem_Click(object sender, EventArgs e)
         {
            
             Form frm = new frmAddUpdatePerson((int)dgvPeople.CurrentRow.Cells[0].Value);
             frm.ShowDialog();
 
-            _RefreshPeoplList();
+            try
+            {
+                await _RefreshPeoplList();
+            }
+            catch (OperationCanceledException)
+            {
+                MessageBox.Show("Operation was canceled.", "Info");
+                return;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error occurred: Failed Uploadin data", "Error");
+                return;
+            }
 
         }
 
@@ -207,7 +232,7 @@ namespace DVLD.People
 
         }
 
-        private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
+        private async void deleteToolStripMenuItem_Click(object sender, EventArgs e)
         {
            
             if (MessageBox.Show("Are you sure you want to delete Person [" + dgvPeople.CurrentRow.Cells[0].Value + "]", "Confirm Delete", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.OK)
@@ -218,7 +243,20 @@ namespace DVLD.People
                 if (clsPerson.DeletePerson((int)dgvPeople.CurrentRow.Cells[0].Value))
                 {
                     MessageBox.Show("Person Deleted Successfully.", "Successful", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    _RefreshPeoplList();
+                    try
+                    {
+                        await _RefreshPeoplList();
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        MessageBox.Show("Operation was canceled.", "Info");
+                        return;
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("An error occurred: Failed Uploadin data", "Error");
+                        return;
+                    }
                 }
 
                 else
@@ -228,23 +266,52 @@ namespace DVLD.People
 
         }
 
-        private void toolStripMenuItem1_Click(object sender, EventArgs e)
+        private async void toolStripMenuItem1_Click(object sender, EventArgs e)
         {
             Form frm = new frmAddUpdatePerson();
             frm.ShowDialog();
 
-            _RefreshPeoplList();
+            try
+            {
+                await _RefreshPeoplList();
+            }
+            catch (OperationCanceledException)
+            {
+                MessageBox.Show("Operation was canceled.", "Info");
+                return;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error occurred: Failed Uploadin data", "Error");
+                return;
+            }
         }
 
-        private void btnAddPerson_Click(object sender, EventArgs e)
+        private async void btnAddPerson_Click(object sender, EventArgs e)
         {
             Form frm1 = new frmAddUpdatePerson();
             frm1.ShowDialog();
-            _RefreshPeoplList();
+
+            try
+            {
+                await _RefreshPeoplList();
+            }
+            catch (OperationCanceledException)
+            {
+                MessageBox.Show("Operation was canceled.", "Info");
+                return;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error occurred: Failed Uploadin data", "Error");
+                return;
+            }
         }
 
         private void btnClose_Click(object sender, EventArgs e)
         {
+            _cts?.Cancel();
+            _cts?.Dispose();
             this.Close();
         }
 

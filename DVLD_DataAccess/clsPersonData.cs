@@ -2,6 +2,8 @@
 using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace DVLD_DataAccess
 {
@@ -327,8 +329,8 @@ namespace DVLD_DataAccess
             return (rowsAffected > 0);
         }
 
-
-        public static DataTable GetAllPeople()
+        
+        public static async Task<DataTable> GetAllPeople(CancellationTokenSource cts)
         {
 
             DataTable dt = new DataTable();
@@ -341,9 +343,9 @@ namespace DVLD_DataAccess
 
             try
             {
-                connection.Open();
+                await connection.OpenAsync();
 
-                SqlDataReader reader = command.ExecuteReader();
+                SqlDataReader reader = await command.ExecuteReaderAsync(cts.Token);
 
                 if (reader.HasRows)
 

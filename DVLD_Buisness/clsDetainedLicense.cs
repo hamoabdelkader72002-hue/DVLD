@@ -1,8 +1,9 @@
-﻿using System;
+﻿using DVLD_DataAccess;
+using System;
 using System.ComponentModel;
 using System.Data;
 using System.Diagnostics.Eventing.Reader;
-using DVLD_DataAccess;
+using System.Threading.Tasks;
 
 namespace DVLD_Buisness
 {
@@ -107,9 +108,9 @@ namespace DVLD_Buisness
 
         }
 
-        public static DataTable GetAllDetainedLicenses()
+        public static async Task<DataTable> GetAllDetainedLicenses()
         {
-            return clsDetainedLicenseData.GetAllDetainedLicenses();
+            return await clsDetainedLicenseData.GetAllDetainedLicenses();
 
         }
 

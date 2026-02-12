@@ -27,7 +27,7 @@ namespace DVLD.Tests
 
         }
 
-        private void frmListTestTypes_Load(object sender, EventArgs e)
+        private  void frmListTestTypes_Load(object sender, EventArgs e)
         {
             _dtAllTestTypes = clsTestType.GetAllTestTypes();
             dgvTestTypes.DataSource = _dtAllTestTypes;

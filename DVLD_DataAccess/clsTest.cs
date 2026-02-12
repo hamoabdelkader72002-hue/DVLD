@@ -139,7 +139,7 @@ namespace DVLD_DataAccess
         }
 
 
-        public static DataTable GetAllTests()
+        public static async Task<DataTable> GetAllTests()
             {
 
                 DataTable dt = new DataTable();
@@ -153,7 +153,7 @@ namespace DVLD_DataAccess
                 {
                     connection.Open();
 
-                    SqlDataReader reader = command.ExecuteReader();
+                    SqlDataReader reader = await command.ExecuteReaderAsync();
 
                     if (reader.HasRows)
 

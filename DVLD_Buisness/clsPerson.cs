@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Data;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Xml.Linq;
 using DVLD_DataAccess;
 
@@ -176,9 +178,9 @@ namespace DVLD_Buisness
             return false;
         }
 
-        public static DataTable GetAllPeople()
+        public static async Task<DataTable>  GetAllPeople(CancellationTokenSource cts)
         {
-            return clsPersonData.GetAllPeople();
+            return await clsPersonData.GetAllPeople(cts);
         }
 
         public static bool DeletePerson(int ID)

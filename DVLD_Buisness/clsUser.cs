@@ -1,7 +1,9 @@
-﻿using System;
+﻿using DVLD_DataAccess;
+using System;
 using System.Data;
 using System.Runtime.InteropServices;
-using DVLD_DataAccess;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace DVLD_Buisness
 {
@@ -129,9 +131,9 @@ namespace DVLD_Buisness
             return false;
         }
 
-        public static DataTable GetAllUsers()
+        public static async Task<DataTable> GetAllUsers(CancellationTokenSource cts)
         {
-            return clsUserData.GetAllUsers();
+            return await clsUserData.GetAllUsers(cts);
         }
 
         public static bool DeleteUser(int UserID)

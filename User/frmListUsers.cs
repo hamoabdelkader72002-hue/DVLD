@@ -6,6 +6,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -15,6 +16,7 @@ namespace DVLD.User
     {
         private static DataTable _dtAllUsers ;
 
+        private CancellationTokenSource _cts;
         public frmListUsers()
         {
             InitializeComponent();
@@ -22,32 +24,47 @@ namespace DVLD.User
 
         private void btnClose_Click(object sender, EventArgs e)
         {
+            _cts?.Cancel();
+            _cts?.Dispose();
             this.Close();
         }
 
-        private void frmListUsers_Load(object sender, EventArgs e)
+        private async void frmListUsers_Load(object sender, EventArgs e)
         {
-            _dtAllUsers = clsUser.GetAllUsers();
-            dgvUsers.DataSource = _dtAllUsers;
-            cbFilterBy.SelectedIndex = 0;
-            lblRecordsCount.Text = dgvUsers.Rows.Count.ToString();
+            _cts = new CancellationTokenSource();
 
-            dgvUsers.Columns[0].HeaderText = "User ID";
-            dgvUsers.Columns[0].Width = 110;
+            try
+            {
+                _dtAllUsers = await clsUser.GetAllUsers(_cts);
+                dgvUsers.DataSource = _dtAllUsers;
+                cbFilterBy.SelectedIndex = 0;
+                lblRecordsCount.Text = dgvUsers.Rows.Count.ToString();
 
-            dgvUsers.Columns[1].HeaderText = "Person ID";
-            dgvUsers.Columns[1].Width = 120;
+                dgvUsers.Columns[0].HeaderText = "User ID";
+                dgvUsers.Columns[0].Width = 110;
 
-            dgvUsers.Columns[2].HeaderText = "Full Name";
-            dgvUsers.Columns[2].Width = 350;
+                dgvUsers.Columns[1].HeaderText = "Person ID";
+                dgvUsers.Columns[1].Width = 120;
 
-            dgvUsers.Columns[3].HeaderText = "UserName";
-            dgvUsers.Columns[3].Width = 120;
+                dgvUsers.Columns[2].HeaderText = "Full Name";
+                dgvUsers.Columns[2].Width = 350;
 
-            dgvUsers.Columns[4].HeaderText = "Is Active";
-            dgvUsers.Columns[4].Width = 120;
+                dgvUsers.Columns[3].HeaderText = "UserName";
+                dgvUsers.Columns[3].Width = 120;
 
-           
+                dgvUsers.Columns[4].HeaderText = "Is Active";
+                dgvUsers.Columns[4].Width = 120;
+            }
+            catch (OperationCanceledException)
+            {
+                MessageBox.Show("Operation was canceled.", "Info");
+                return;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error occurred: Failed Uploadin data", "Error");
+                return;
+            }
         }
 
         private void cbFilterBy_SelectedIndexChanged(object sender, EventArgs e)

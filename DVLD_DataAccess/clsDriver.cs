@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using static DVLD_DataAccess.clsCountryData;
 using System.Net;
 using System.Security.Policy;
+using System.Threading;
 
 namespace DVLD_DataAccess
 {
@@ -119,7 +120,7 @@ namespace DVLD_DataAccess
             return isFound;
         }
 
-        public static DataTable GetAllDrivers()
+        public static async Task<DataTable> GetAllDrivers(CancellationTokenSource cts)
             {
 
                 DataTable dt = new DataTable();
@@ -133,7 +134,7 @@ namespace DVLD_DataAccess
                 {
                     connection.Open();
 
-                    SqlDataReader reader = command.ExecuteReader();
+                    SqlDataReader reader = await command.ExecuteReaderAsync(cts.Token);
 
                     if (reader.HasRows)
 

@@ -1,9 +1,10 @@
-﻿using System;
+﻿using DVLD_DataAccess;
+using System;
 using System.ComponentModel;
 using System.Data;
 using System.Diagnostics.Eventing.Reader;
+using System.Threading.Tasks;
 using System.Xml.Linq;
-using DVLD_DataAccess;
 
 namespace DVLD_Buisness
 {
@@ -109,9 +110,9 @@ namespace DVLD_Buisness
 
         }
 
-        public static DataTable GetAllTestAppointments()
+        public static async Task<DataTable> GetAllTestAppointments()
         {
-            return clsTestAppointmentData.GetAllTestAppointments();
+            return await clsTestAppointmentData.GetAllTestAppointments();
 
         }
 

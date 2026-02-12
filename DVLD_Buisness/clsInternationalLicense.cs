@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Data;
 using System.Diagnostics.Eventing.Reader;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Xml.Linq;
 using DVLD_DataAccess;
 
@@ -125,9 +127,9 @@ namespace DVLD_Buisness
 
         }
 
-        public static DataTable GetAllInternationalLicenses()
+        public static async Task<DataTable> GetAllInternationalLicenses(CancellationTokenSource cts)
         {
-            return clsInternationalLicenseData.GetAllInternationalLicenses();
+            return await clsInternationalLicenseData.GetAllInternationalLicenses(cts);
 
         }
 

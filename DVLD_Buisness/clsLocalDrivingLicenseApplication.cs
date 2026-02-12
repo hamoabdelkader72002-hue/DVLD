@@ -1,11 +1,13 @@
-﻿using System;
+﻿using DVLD_DataAccess;
+using System;
 using System.Data;
 using System.Runtime.Remoting.Messaging;
 using System.Security.Cryptography;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Xml.Linq;
-using DVLD_DataAccess;
-using static System.Net.Mime.MediaTypeNames;
 using static DVLD_Buisness.clsTestType;
+using static System.Net.Mime.MediaTypeNames;
 
 
 namespace DVLD_Buisness
@@ -169,9 +171,9 @@ namespace DVLD_Buisness
             return false;
         }
 
-        public static DataTable GetAllLocalDrivingLicenseApplications()
+        public static async Task<DataTable> GetAllLocalDrivingLicenseApplications(CancellationTokenSource cts)
         {
-            return clsLocalDrivingLicenseApplicationData.GetAllLocalDrivingLicenseApplications();
+            return await clsLocalDrivingLicenseApplicationData.GetAllLocalDrivingLicenseApplications(cts);
         }
 
         public  bool Delete()

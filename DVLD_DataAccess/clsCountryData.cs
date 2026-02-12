@@ -110,7 +110,7 @@ namespace DVLD_DataAccess
             return isFound;
         }
 
-        public static DataTable GetAllCountries()
+        public static async Task<DataTable> GetAllCountries()
         {
 
             DataTable dt = new DataTable();
@@ -124,7 +124,7 @@ namespace DVLD_DataAccess
             {
                 connection.Open();
 
-                SqlDataReader reader = command.ExecuteReader();
+                SqlDataReader reader = await command.ExecuteReaderAsync();
 
                 if (reader.HasRows)
 

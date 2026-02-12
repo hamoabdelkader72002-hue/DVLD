@@ -30,11 +30,11 @@ namespace DVLD.Applications.Rlease_Detained_License
             this.Close();
         }
 
-        private void frmListDetainedLicenses_Load(object sender, EventArgs e)
+        private async void frmListDetainedLicenses_Load(object sender, EventArgs e)
         {
             cbFilterBy.SelectedIndex= 0;
 
-            _dtDetainedLicenses = clsDetainedLicense.GetAllDetainedLicenses();
+            _dtDetainedLicenses = await clsDetainedLicense.GetAllDetainedLicenses();
 
             dgvDetainedLicenses.DataSource = _dtDetainedLicenses;
             lblTotalRecords.Text = dgvDetainedLicenses.Rows.Count.ToString();

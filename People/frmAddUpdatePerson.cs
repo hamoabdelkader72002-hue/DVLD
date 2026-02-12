@@ -49,10 +49,10 @@ namespace DVLD.People
             _PersonID = PersonID;
         }
 
-        private void _ResetDefualtValues()
+        private async Task _ResetDefualtValues()
         {
             //this will initialize the reset the defaule values
-            _FillCountriesInComoboBox();
+            await _FillCountriesInComoboBox();
 
             if (_Mode == enMode.AddNew)
             {
@@ -96,9 +96,9 @@ namespace DVLD.People
 
         }
 
-        private void _FillCountriesInComoboBox()
+        private async Task _FillCountriesInComoboBox()
         {
-            DataTable dtCountries = clsCountry.GetAllCountries();
+            DataTable dtCountries = await clsCountry.GetAllCountries();
 
             foreach (DataRow row in dtCountries.Rows)
             {
@@ -150,9 +150,9 @@ namespace DVLD.People
 
         }
 
-        private void frmAddUpdatePerson_Load(object sender, EventArgs e)
+        private async void frmAddUpdatePerson_Load(object sender, EventArgs e)
         {
-            _ResetDefualtValues();
+            await _ResetDefualtValues();
 
             if(_Mode==enMode.Update)
                 _LoadData();

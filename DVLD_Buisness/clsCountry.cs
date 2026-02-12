@@ -1,6 +1,7 @@
-﻿using System;
+﻿using DVLD_DataAccess;
+using System;
 using System.Data;
-using DVLD_DataAccess;
+using System.Threading.Tasks;
 
 namespace DVLD_Buisness
 {
@@ -50,9 +51,9 @@ namespace DVLD_Buisness
 
         }
 
-        public static DataTable GetAllCountries()
+        public static async Task<DataTable> GetAllCountries()
         {
-            return clsCountryData.GetAllCountries();
+            return await clsCountryData.GetAllCountries();
 
         }
 
