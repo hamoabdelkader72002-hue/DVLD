@@ -158,13 +158,6 @@ D:\programmer\for visual community\Full Real Project, Course 19\DVLD Hadhood Sol
 D:\programmer\for visual community\Full Real Project, Course 19\DVLD Hadhood Solution\DVLD Project Final\Project\DVLD\obj\Debug\DVLD.exe
 D:\programmer\for visual community\Full Real Project, Course 19\DVLD Hadhood Solution\DVLD Project Final\Project\DVLD\obj\Debug\DVLD.pdb
 D:\programmer\for visual community\Full Real Project, Course 19\DVLD Hadhood Solution\DVLD Project Final\Project\DVLD\bin\Debug\AppSettings.json
-D:\programmer\for visual community\Full Real Project, Course 19\DVLD Hadhood Solution\DVLD\bin\Debug\AppSettings.json
-D:\programmer\for visual community\Full Real Project, Course 19\DVLD Hadhood Solution\DVLD\bin\Debug\DVLD.exe
-D:\programmer\for visual community\Full Real Project, Course 19\DVLD Hadhood Solution\DVLD\bin\Debug\DVLD.pdb
-D:\programmer\for visual community\Full Real Project, Course 19\DVLD Hadhood Solution\DVLD\bin\Debug\DVLD_Buisness.dll
-D:\programmer\for visual community\Full Real Project, Course 19\DVLD Hadhood Solution\DVLD\bin\Debug\DVLD_DataAccess.dll
-D:\programmer\for visual community\Full Real Project, Course 19\DVLD Hadhood Solution\DVLD\bin\Debug\DVLD_Buisness.pdb
-D:\programmer\for visual community\Full Real Project, Course 19\DVLD Hadhood Solution\DVLD\bin\Debug\DVLD_DataAccess.pdb
 D:\programmer\for visual community\Full Real Project, Course 19\DVLD Hadhood Solution\DVLD\obj\Debug\DVLD.csproj.AssemblyReference.cache
 D:\programmer\for visual community\Full Real Project, Course 19\DVLD Hadhood Solution\DVLD\obj\Debug\DVLD.Applications.Rlease_Detained_License.frmListDetainedLicenses.resources
 D:\programmer\for visual community\Full Real Project, Course 19\DVLD Hadhood Solution\DVLD\obj\Debug\DVLD.Applications.Rlease_Detained_License.frmReleaseDetainedLicenseApplication.resources
@@ -211,40 +204,3 @@ D:\programmer\for visual community\Full Real Project, Course 19\DVLD Hadhood Sol
 D:\programmer\for visual community\Full Real Project, Course 19\DVLD Hadhood Solution\DVLD\obj\Debug\DVLD.User.frmUserInfo.resources
 D:\programmer\for visual community\Full Real Project, Course 19\DVLD Hadhood Solution\DVLD\obj\Debug\DVLD.csproj.GenerateResource.cache
 D:\programmer\for visual community\Full Real Project, Course 19\DVLD Hadhood Solution\DVLD\obj\Debug\DVLD.csproj.CoreCompileInputs.cache
-D:\programmer\for visual community\Full Real Project, Course 19\DVLD Hadhood Solution\DVLD\obj\Debug\DVLD.csproj.Up2Date
-D:\programmer\for visual community\Full Real Project, Course 19\DVLD Hadhood Solution\DVLD\obj\Debug\DVLD.exe
-D:\programmer\for visual community\Full Real Project, Course 19\DVLD Hadhood Solution\DVLD\obj\Debug\DVLD.pdb
-D:\programmer\for visual community\Full Real Project, Course 19\DVLD Hadhood Solution\DVLD\bin\Debug\Microsoft.Extensions.Configuration.dll
-D:\programmer\for visual community\Full Real Project, Course 19\DVLD Hadhood Solution\DVLD\bin\Debug\Microsoft.Extensions.Configuration.Abstractions.dll
-D:\programmer\for visual community\Full Real Project, Course 19\DVLD Hadhood Solution\DVLD\bin\Debug\Microsoft.Extensions.Configuration.Json.dll
-D:\programmer\for visual community\Full Real Project, Course 19\DVLD Hadhood Solution\DVLD\bin\Debug\Microsoft.Extensions.Primitives.dll
-D:\programmer\for visual community\Full Real Project, Course 19\DVLD Hadhood Solution\DVLD\bin\Debug\System.Memory.dll
-D:\programmer\for visual community\Full Real Project, Course 19\DVLD Hadhood Solution\DVLD\bin\Debug\Microsoft.Extensions.FileProviders.Abstractions.dll
-D:\programmer\for visual community\Full Real Project, Course 19\DVLD Hadhood Solution\DVLD\bin\Debug\System.Text.Json.dll
-D:\programmer\for visual community\Full Real Project, Course 19\DVLD Hadhood Solution\DVLD\bin\Debug\Microsoft.Extensions.Configuration.FileExtensions.dll
-D:\programmer\for visual community\Full Real Project, Course 19\DVLD Hadhood Solution\DVLD\bin\Debug\System.Buffers.dll
-D:\programmer\for visual community\Full Real Project, Course 19\DVLD Hadhood Solution\DVLD\bin\Debug\System.Runtime.CompilerServices.Unsafe.dll
-D:\programmer\for visual community\Full Real Project, Course 19\DVLD Hadhood Solution\DVLD\bin\Debug\System.Numerics.Vectors.dll
-D:\programmer\for visual community\Full Real Project, Course 19\DVLD Hadhood Solution\DVLD\bin\Debug\System.Threading.Tasks.Extensions.dll
-D:\programmer\for visual community\Full Real Project, Course 19\DVLD Hadhood Solution\DVLD\bin\Debug\System.IO.Pipelines.dll
-D:\programmer\for visual community\Full Real Project, Course 19\DVLD Hadhood Solution\DVLD\bin\Debug\System.Text.Encodings.Web.dll
-D:\programmer\for visual community\Full Real Project, Course 19\DVLD Hadhood Solution\DVLD\bin\Debug\Microsoft.Bcl.AsyncInterfaces.dll
-D:\programmer\for visual community\Full Real Project, Course 19\DVLD Hadhood Solution\DVLD\bin\Debug\Microsoft.Extensions.FileProviders.Physical.dll
-D:\programmer\for visual community\Full Real Project, Course 19\DVLD Hadhood Solution\DVLD\bin\Debug\Microsoft.Extensions.FileSystemGlobbing.dll
-D:\programmer\for visual community\Full Real Project, Course 19\DVLD Hadhood Solution\DVLD\bin\Debug\Microsoft.Extensions.Configuration.xml
-D:\programmer\for visual community\Full Real Project, Course 19\DVLD Hadhood Solution\DVLD\bin\Debug\Microsoft.Extensions.Configuration.Abstractions.xml
-D:\programmer\for visual community\Full Real Project, Course 19\DVLD Hadhood Solution\DVLD\bin\Debug\Microsoft.Extensions.Configuration.Json.xml
-D:\programmer\for visual community\Full Real Project, Course 19\DVLD Hadhood Solution\DVLD\bin\Debug\Microsoft.Extensions.Primitives.xml
-D:\programmer\for visual community\Full Real Project, Course 19\DVLD Hadhood Solution\DVLD\bin\Debug\System.Memory.xml
-D:\programmer\for visual community\Full Real Project, Course 19\DVLD Hadhood Solution\DVLD\bin\Debug\Microsoft.Extensions.FileProviders.Abstractions.xml
-D:\programmer\for visual community\Full Real Project, Course 19\DVLD Hadhood Solution\DVLD\bin\Debug\System.Text.Json.xml
-D:\programmer\for visual community\Full Real Project, Course 19\DVLD Hadhood Solution\DVLD\bin\Debug\Microsoft.Extensions.Configuration.FileExtensions.xml
-D:\programmer\for visual community\Full Real Project, Course 19\DVLD Hadhood Solution\DVLD\bin\Debug\System.Buffers.xml
-D:\programmer\for visual community\Full Real Project, Course 19\DVLD Hadhood Solution\DVLD\bin\Debug\System.Runtime.CompilerServices.Unsafe.xml
-D:\programmer\for visual community\Full Real Project, Course 19\DVLD Hadhood Solution\DVLD\bin\Debug\System.Numerics.Vectors.xml
-D:\programmer\for visual community\Full Real Project, Course 19\DVLD Hadhood Solution\DVLD\bin\Debug\System.Threading.Tasks.Extensions.xml
-D:\programmer\for visual community\Full Real Project, Course 19\DVLD Hadhood Solution\DVLD\bin\Debug\System.IO.Pipelines.xml
-D:\programmer\for visual community\Full Real Project, Course 19\DVLD Hadhood Solution\DVLD\bin\Debug\System.Text.Encodings.Web.xml
-D:\programmer\for visual community\Full Real Project, Course 19\DVLD Hadhood Solution\DVLD\bin\Debug\Microsoft.Bcl.AsyncInterfaces.xml
-D:\programmer\for visual community\Full Real Project, Course 19\DVLD Hadhood Solution\DVLD\bin\Debug\Microsoft.Extensions.FileProviders.Physical.xml
-D:\programmer\for visual community\Full Real Project, Course 19\DVLD Hadhood Solution\DVLD\bin\Debug\Microsoft.Extensions.FileSystemGlobbing.xml
