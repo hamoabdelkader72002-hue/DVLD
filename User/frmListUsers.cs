@@ -76,12 +76,9 @@ namespace DVLD.User
                 cbIsActive.Visible = true;
                 cbIsActive.Focus();
                 cbIsActive.SelectedIndex = 0;
-            } 
-            
+            }
             else
-
             {
-                
                 txtFilterValue.Visible = (cbFilterBy.Text !="None") ;
                 cbIsActive.Visible = false;
 
@@ -95,8 +92,6 @@ namespace DVLD.User
                 txtFilterValue.Text = "";
                 txtFilterValue.Focus();
             }
-
-           
         }
 
         private void txtFilterValue_TextChanged(object sender, EventArgs e)
@@ -115,8 +110,6 @@ namespace DVLD.User
                 case "Person ID":
                     FilterColumn = "PersonID";
                     break;
-
-        
                 case "Full Name":
                     FilterColumn = "FullName";
                     break;
