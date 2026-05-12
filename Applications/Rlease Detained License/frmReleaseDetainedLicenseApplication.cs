@@ -50,7 +50,6 @@ namespace DVLD.Applications.Rlease_Detained_License
             llShowLicenseHistory.Enabled = (_SelectedLicenseID != -1);
 
             if (_SelectedLicenseID == -1)
-
             {
                 return;
             }

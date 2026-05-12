@@ -2,8 +2,11 @@
 using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using static DVLD_DataAccess.clsCountryData;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace DVLD_DataAccess
 {
@@ -15,89 +18,55 @@ namespace DVLD_DataAccess
            ref short Gendor,ref string Address,  ref string Phone, ref string Email,
            ref int NationalityCountryID, ref string ImagePath)
         {
-            bool isFound = false;
-
-            SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
-
-            string query = "EXEC SP_GetPerson @PersonID";
-
-            SqlCommand command = new SqlCommand(query, connection);
-
-            command.Parameters.AddWithValue("@PersonID", PersonID);
-
-            try
+            SqlParameter[] parameters = new SqlParameter[]
             {
-                connection.Open();
-                SqlDataReader reader = command.ExecuteReader();
+                new SqlParameter("ID", SqlDbType.Int) {Value = PersonID}
+            };
 
-                if (reader.Read())
-                {
-                    // The record was found
-                    isFound = true;
+            string tmpFirstName = "";
+            string tmpSecondName = "";
+            string tmpThirdName = "";
+            string tmpLastName = "";
+            string tmpNationalNo = "";
+            DateTime tmpDateOfBirth = DateTime.Today;
+            byte tmpGendor = 0;
+            string tmpAddress = "";
+            string tmpPhone = "";
+            string tmpEmail = "";
+            int tmpNationalityCountryID = 0;
+            string tmpImagePath = "";
 
-                    FirstName = (string)reader["FirstName"];
-                    SecondName = (string)reader["SecondName"];
-
-                    //ThirdName: allows null in database so we should handle null
-                    if (reader["ThirdName"] != DBNull.Value)
-                    {
-                        ThirdName = (string)reader["ThirdName"];
-                    }
-                    else
-                    {
-                        ThirdName = "";
-                    }
-
-                    LastName = (string)reader["LastName"];
-                    NationalNo = (string)reader["NationalNo"];
-                    DateOfBirth = (DateTime)reader["DateOfBirth"];
-                    Gendor = (byte) reader["Gendor"];
-                    Address = (string)reader["Address"];
-                    Phone = (string)reader["Phone"];
-
-
-                    //Email: allows null in database so we should handle null
-                    if (reader["Email"] != DBNull.Value)
-                    {
-                        Email = (string)reader["Email"];
-                    }
-                    else
-                    {
-                        Email = "";
-                    }
-
-                    NationalityCountryID = (int)reader["NationalityCountryID"];
-
-                    //ImagePath: allows null in database so we should handle null
-                    if (reader["ImagePath"] != DBNull.Value)
-                    {
-                        ImagePath = (string)reader["ImagePath"];
-                    }
-                    else
-                    {
-                        ImagePath = "";
-                    }
-
-                }
-                else
-                {
-                    // The record was not found
-                    isFound = false;
-                }
-
-                reader.Close();
-            }
-            catch (Exception ex)
+            bool isFound = clsDataHelper.GetSingleRow("SP_GetPerson", parameters, reader =>
             {
-                //Console.WriteLine("Error: " + ex.Message);
-                
-                isFound = false;
-            }
-            finally
-            {
-                connection.Close();
-            }
+                tmpFirstName = reader.GetString(reader.GetOrdinal("FirstName"));
+                tmpSecondName = reader.GetString(reader.GetOrdinal("SecondName"));
+                tmpThirdName = reader["ThirdName"] !=  DBNull.Value ? reader.GetString(reader.GetOrdinal("ThirdName")) : "";
+                tmpLastName = reader.GetString(reader.GetOrdinal("LastName"));
+                tmpNationalNo = reader.GetString(reader.GetOrdinal("NationalNo"));
+                tmpDateOfBirth = reader.GetDateTime(reader.GetOrdinal("DateOfBirth"));
+                tmpGendor = reader.GetByte(reader.GetOrdinal("Gendor"));
+                tmpAddress = reader.GetString(reader.GetOrdinal("Address"));
+                tmpPhone = reader.GetString(reader.GetOrdinal("Phone"));
+                tmpEmail = reader["Email"] != DBNull.Value ? reader.GetString(reader.GetOrdinal("Email")) : "";
+                tmpNationalityCountryID = reader.GetInt32(reader.GetOrdinal("NationalityCountryID"));
+                tmpImagePath = reader["ImagePath"] != DBNull.Value ? reader.GetString(reader.GetOrdinal("ImagePath")) : "";
+            });
 
+            if (isFound)
+            {
+                FirstName = tmpFirstName;
+                SecondName = tmpSecondName;
+                ThirdName = tmpThirdName;
+                LastName = tmpLastName;
+                NationalNo = tmpNationalNo;
+                DateOfBirth = tmpDateOfBirth;
+                Gendor = tmpGendor;
+                Address = tmpAddress;
+                Phone = tmpPhone;
+                Email = tmpEmail;
+                NationalityCountryID = tmpNationalityCountryID;
+                ImagePath = tmpImagePath;
+            }
             return isFound;
         }
 
@@ -107,89 +76,55 @@ namespace DVLD_DataAccess
          ref short Gendor,ref string Address, ref string Phone, ref string Email,
          ref int NationalityCountryID, ref string ImagePath)
         {
-            bool isFound = false;
-
-            SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
-
-            string query = "EXEC [dbo].[SP_GetPersonByNationalNo] @NationalNo";
-
-            SqlCommand command = new SqlCommand(query, connection);
-
-            command.Parameters.AddWithValue("@NationalNo", NationalNo);
-
-            try
+            SqlParameter[] parameters = new SqlParameter[]
             {
-                connection.Open();
-                SqlDataReader reader = command.ExecuteReader();
+                new SqlParameter("NationalNo", SqlDbType.NVarChar) {Value = NationalNo}
+            };
 
-                if (reader.Read())
-                {
-                    // The record was found
-                    isFound = true;
+            int tmpPersonID = 0;
+            string tmpFirstName = "";
+            string tmpSecondName = "";
+            string tmpThirdName = "";
+            string tmpLastName = "";
+            DateTime tmpDateOfBirth = DateTime.Today;
+            byte tmpGendor = 0;
+            string tmpAddress = "";
+            string tmpPhone = "";
+            string tmpEmail = "";
+            int tmpNationalityCountryID = 0;
+            string tmpImagePath = "";
 
-                    PersonID = (int)reader["PersonID"];
-                    FirstName = (string)reader["FirstName"];
-                    SecondName = (string)reader["SecondName"];
-
-                    //ThirdName: allows null in database so we should handle null
-                    if (reader["ThirdName"] != DBNull.Value)
-                    {
-                        ThirdName = (string)reader["ThirdName"];
-                    }
-                    else
-                    {
-                        ThirdName = "";
-                    }
-
-                    LastName = (string)reader["LastName"];
-                    DateOfBirth = (DateTime)reader["DateOfBirth"];
-                    Gendor = (byte)reader["Gendor"];
-                    Address = (string)reader["Address"];
-                    Phone = (string)reader["Phone"];
-
-                    //Email: allows null in database so we should handle null
-                    if (reader["Email"] != DBNull.Value)
-                    {
-                        Email = (string)reader["Email"];
-                    }
-                    else
-                    {
-                        Email = "";
-                    }
-
-                    NationalityCountryID = (int)reader["NationalityCountryID"];
-
-                    //ImagePath: allows null in database so we should handle null
-                    if (reader["ImagePath"] != DBNull.Value)
-                    {
-                        ImagePath = (string)reader["ImagePath"];
-                    }
-                    else
-                    {
-                        ImagePath = "";
-                    }
-
-                }
-                else
-                {
-                    // The record was not found
-                    isFound = false;
-                }
-
-                reader.Close();
-
-
-            }
-            catch (Exception ex)
+            bool isFound = clsDataHelper.GetSingleRow("SP_GetPersonByNationalNo", parameters, reader =>
             {
-                //Console.WriteLine("Error: " + ex.Message);
-                isFound = false;
-            }
-            finally
-            {
-                connection.Close();
-            }
+                tmpPersonID = reader.GetInt32(reader.GetOrdinal("PersonID"));
+                tmpFirstName = reader.GetString(reader.GetOrdinal("FirstName"));
+                tmpSecondName = reader.GetString(reader.GetOrdinal("SecondName"));
+                tmpThirdName = reader["ThirdName"] != DBNull.Value ? reader.GetString(reader.GetOrdinal("ThirdName")) : "";
+                tmpLastName = reader.GetString(reader.GetOrdinal("LastName"));
+                tmpDateOfBirth = reader.GetDateTime(reader.GetOrdinal("DateOfBirth"));
+                tmpGendor = reader.GetByte(reader.GetOrdinal("Gendor"));
+                tmpAddress = reader.GetString(reader.GetOrdinal("Address"));
+                tmpPhone = reader.GetString(reader.GetOrdinal("Phone"));
+                tmpEmail = reader["Email"] != DBNull.Value ? reader.GetString(reader.GetOrdinal("Email")) : "";
+                tmpNationalityCountryID = reader.GetInt32(reader.GetOrdinal("NationalityCountryID"));
+                tmpImagePath = reader["ImagePath"] != DBNull.Value ? reader.GetString(reader.GetOrdinal("ImagePath")) : "";
+            });
 
+            if (isFound)
+            {
+                FirstName = tmpFirstName;
+                SecondName = tmpSecondName;
+                ThirdName = tmpThirdName;
+                LastName = tmpLastName;
+                PersonID = tmpPersonID;
+                DateOfBirth = tmpDateOfBirth;
+                Gendor = tmpGendor;
+                Address = tmpAddress;
+                Phone = tmpPhone;
+                Email = tmpEmail;
+                NationalityCountryID = tmpNationalityCountryID;
+                ImagePath = tmpImagePath;
+            }
             return isFound;
         }
 
@@ -200,67 +135,25 @@ namespace DVLD_DataAccess
            short Gendor, string Address,  string Phone,  string Email,
             int NationalityCountryID,  string ImagePath)
         {
-            //this function will return the new person id if succeeded and -1 if not.
-            int PersonID = -1;
-
-            SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
-
-            string query = @"EXEC [dbo].[SP_AddNewPerson] @NationalNo, @FirstName, @SecondName, @ThirdName, @LastName,
-                                     @DateOfBirth,@Gendor,@Address,@Phone, @Email,@NationalityCountryID,@ImagePath";
-
-            SqlCommand command = new SqlCommand(query, connection);
-
-            command.Parameters.AddWithValue("@FirstName", FirstName);
-            command.Parameters.AddWithValue("@SecondName", SecondName);
-           
-            if (ThirdName != "" && ThirdName != null)
-                command.Parameters.AddWithValue("@ThirdName", ThirdName);
-            else
-                command.Parameters.AddWithValue("@ThirdName", System.DBNull.Value);
-
-            command.Parameters.AddWithValue("@LastName", LastName);
-            command.Parameters.AddWithValue("@NationalNo", NationalNo);
-            command.Parameters.AddWithValue("@DateOfBirth", DateOfBirth);
-            command.Parameters.AddWithValue("@Gendor", Gendor);
-            command.Parameters.AddWithValue("@Address", Address);
-            command.Parameters.AddWithValue("@Phone", Phone);
-            
-            if (Email != "" && Email != null)
-                command.Parameters.AddWithValue("@Email", Email);
-            else
-                command.Parameters.AddWithValue("@Email", System.DBNull.Value);
-
-            command.Parameters.AddWithValue("@NationalityCountryID", NationalityCountryID);
-
-            if (ImagePath != "" && ImagePath != null)
-                command.Parameters.AddWithValue("@ImagePath", ImagePath);
-            else
-                command.Parameters.AddWithValue("@ImagePath", System.DBNull.Value);
-
-            try
+            SqlParameter[] parameters = new SqlParameter[]
             {
-                connection.Open();
+                new SqlParameter("@NN", SqlDbType.NVarChar) {Value = NationalNo},
+                new SqlParameter("@FN", SqlDbType.NVarChar) {Value = FirstName},
+                new SqlParameter("@SN", SqlDbType.NVarChar) {Value = SecondName},
+                new SqlParameter("@TN", SqlDbType.NVarChar) {Value = ThirdName},
+                new SqlParameter("@LN", SqlDbType.NVarChar) {Value = LastName},
+                new SqlParameter("DOB", SqlDbType.DateTime) {Value = DateOfBirth},
+                new SqlParameter("Gendor", SqlDbType.TinyInt) {Value = Gendor},
+                new SqlParameter("Add", SqlDbType.NVarChar) {Value = Address},
+                new SqlParameter("Phone", SqlDbType.NVarChar) {Value = Phone},
+                new SqlParameter("Email", SqlDbType.NVarChar) {Value = Email},
+                new SqlParameter("NCId", SqlDbType.Int) {Value = NationalityCountryID},
+                new SqlParameter("IPath", SqlDbType.NVarChar) {Value = ImagePath},
+            };
 
-                object result = command.ExecuteScalar();
+            object result = clsDataHelper.ExecuteScalar("SP_AddNewPerson", parameters);
 
-                if (result != null && int.TryParse(result.ToString(), out int insertedID))
-                {
-                    PersonID = insertedID;
-                }
-            }
-
-            catch (Exception ex)
-            {
-                //Console.WriteLine("Error: " + ex.Message);
-
-            }
-
-            finally
-            {
-                connection.Close();
-            }
-
-            return PersonID;
+            return result != null ? Convert.ToInt32(result) : -1;
         }
 
 
@@ -270,206 +163,66 @@ namespace DVLD_DataAccess
            short Gendor, string Address, string Phone, string Email,
             int NationalityCountryID, string ImagePath)
         {
-
-            int rowsAffected = 0;
-            SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
-
-            string query = @"EXEC SP_UpdatePerson @PersonID, @NationalNo, @FirstName, @SecondName, @ThirdName, @LastName,
-                                     @DateOfBirth,@Gendor,@Address,@Phone, @Email,@NationalityCountryID,@ImagePath";
-
-            SqlCommand command = new SqlCommand(query, connection);
-
-            command.Parameters.AddWithValue("@PersonID", PersonID);
-            command.Parameters.AddWithValue("@FirstName", FirstName);
-            command.Parameters.AddWithValue("@SecondName", SecondName);
-
-            if (ThirdName != "" && ThirdName != null)
-                command.Parameters.AddWithValue("@ThirdName", ThirdName);
-            else
-                command.Parameters.AddWithValue("@ThirdName", System.DBNull.Value);
-
-          
-            command.Parameters.AddWithValue("@LastName", LastName);
-            command.Parameters.AddWithValue("@NationalNo", NationalNo);
-            command.Parameters.AddWithValue("@DateOfBirth", DateOfBirth);
-            command.Parameters.AddWithValue("@Gendor", Gendor);
-            command.Parameters.AddWithValue("@Address", Address);
-            command.Parameters.AddWithValue("@Phone", Phone);
-
-            if (Email != "" && Email != null)
-                command.Parameters.AddWithValue("@Email", Email);
-            else
-                command.Parameters.AddWithValue("@Email", System.DBNull.Value);
-
-            command.Parameters.AddWithValue("@NationalityCountryID", NationalityCountryID);
-
-            if (ImagePath != "" && ImagePath != null)
-                command.Parameters.AddWithValue("@ImagePath", ImagePath);
-            else
-                command.Parameters.AddWithValue("@ImagePath", System.DBNull.Value);
-
-
-            try
+            SqlParameter[] parameter = new SqlParameter[]
             {
-                connection.Open();
-                rowsAffected = command.ExecuteNonQuery();
+                new SqlParameter("@ID", SqlDbType.Int) {Value = PersonID},
+                new SqlParameter("@NN", SqlDbType.NVarChar) {Value = NationalNo},
+                new SqlParameter("@FN", SqlDbType.NVarChar) {Value = FirstName},
+                new SqlParameter("@SN", SqlDbType.NVarChar) {Value = SecondName},
+                new SqlParameter("@TN", SqlDbType.NVarChar) {Value = ThirdName},
+                new SqlParameter("@LN", SqlDbType.NVarChar) {Value = LastName},
+                new SqlParameter("@DOB", SqlDbType.DateTime) {Value = DateOfBirth},
+                new SqlParameter("@Gendor", SqlDbType.TinyInt) {Value = Gendor},
+                new SqlParameter("@Add", SqlDbType.NVarChar) {Value = Address},
+                new SqlParameter("@Phone", SqlDbType.NVarChar) {Value = Phone},
+                new SqlParameter("@Email", SqlDbType.NVarChar) {Value = Email},
+                new SqlParameter("@NCId", SqlDbType.Int) {Value = NationalityCountryID},
+                new SqlParameter("@IPath", SqlDbType.NVarChar) {Value = ImagePath}
+            };
 
-            }
-            catch (Exception ex)
-            {
-                //Console.WriteLine("Error: " + ex.Message);
-                return false;
-            }
+            int rowsAffected = clsDataHelper.ExecuteNonQuery("SP_UpdatePerson", parameter);
 
-            finally
-            {
-                connection.Close();
-            }
-
-            return (rowsAffected > 0);
+            return rowsAffected > 0;
         }
 
         
         public static async Task<DataTable> GetAllPeople(CancellationTokenSource cts)
         {
-
-            DataTable dt = new DataTable();
-            SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
-
-            string query =
-              @"EXEC SP_GetAllPeople";
-
-            SqlCommand command = new SqlCommand(query, connection);
-
-            try
-            {
-                await connection.OpenAsync();
-
-                SqlDataReader reader = await command.ExecuteReaderAsync(cts.Token);
-
-                if (reader.HasRows)
-
-                {
-                    dt.Load(reader);
-                }
-
-                reader.Close();
-
-
-            }
-
-            catch (Exception ex)
-            {
-                // Console.WriteLine("Error: " + ex.Message);
-            }
-            finally
-            {
-                connection.Close();
-            }
-
-            return dt;
-
+            return await clsDataHelper.GetDataTableAsync("SP_GetAllPeople", null);
         }
 
         public static bool DeletePerson(int PersonID)
         {
-
-            int rowsAffected = 0;
-
-            SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
-
-            string query = @"EXEC SP_DeletePerson @PersonID";
-
-            SqlCommand command = new SqlCommand(query, connection);
-
-            command.Parameters.AddWithValue("@PersonID", PersonID);
-
-            try
+            SqlParameter[] parameter = new SqlParameter[]
             {
-                connection.Open();
+                new SqlParameter("PersonID", SqlDbType.Int) {Value = PersonID}
+            };
 
-                rowsAffected = command.ExecuteNonQuery();
+            int rowsAffected = clsDataHelper.ExecuteNonQuery("SP_DeletePerson", parameter);
 
-            }
-            catch (Exception ex)
-            {
-                // Console.WriteLine("Error: " + ex.Message);
-            }
-            finally
-            {
-
-                connection.Close();
-
-            }
-
-            return (rowsAffected > 0);
-
+            return rowsAffected > 0;
         }
 
         public static bool IsPersonExist(int PersonID)
         {
-            bool isFound = false;
-
-            SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
-
-            string query = "EXEC [dbo].[SP_IsPersonExistByPersonID] @PersonID";
-
-            SqlCommand command = new SqlCommand(query, connection);
-
-            command.Parameters.AddWithValue("@PersonID", PersonID);
-
-            try
+            SqlParameter[] parameters = new SqlParameter[]
             {
-                connection.Open();
-                SqlDataReader reader = command.ExecuteReader();
+                new SqlParameter("PersonID", SqlDbType.Int) {Value = PersonID}
+            };
 
-                isFound = reader.HasRows;
-
-                reader.Close();
-            }
-            catch (Exception ex)
-            {
-                //Console.WriteLine("Error: " + ex.Message);
-                isFound = false;
-            }
-            finally
-            {
-                connection.Close();
-            }
+            bool isFound = clsDataHelper.GetSingleRow("SP_IsPersonExistByPersonID", parameters, reader => reader.Close());
 
             return isFound;
         }
 
         public static bool IsPersonExist(string NationalNo)
         {
-            bool isFound = false;
-
-            SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
-
-            string query = "EXEC [dbo].[SP_IsPersonExistByNationalNo] @NationalNo";
-
-            SqlCommand command = new SqlCommand(query, connection);
-
-            command.Parameters.AddWithValue("@NationalNo", NationalNo);
-
-            try
+            SqlParameter[] parameters = new SqlParameter[]
             {
-                connection.Open();
-                SqlDataReader reader = command.ExecuteReader();
+                new SqlParameter("NationalNo", SqlDbType.Int) {Value = NationalNo}
+            };
 
-                isFound = reader.HasRows;
-
-                reader.Close();
-            }
-            catch (Exception ex)
-            {
-                //Console.WriteLine("Error: " + ex.Message);
-                isFound = false;
-            }
-            finally
-            {
-                connection.Close();
-            }
+            bool isFound = clsDataHelper.GetSingleRow("SP_IsPersonExistByNationalNo", parameters, reader => reader.Close());
 
             return isFound;
         }

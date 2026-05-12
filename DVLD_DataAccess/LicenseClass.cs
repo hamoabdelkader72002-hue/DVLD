@@ -14,247 +14,121 @@ namespace DVLD_DataAccess
     public class clsLicenseClassData
     {
 
-        public static bool GetLicenseClassInfoByID(int LicenseClassID, 
-            ref string ClassName, ref string ClassDescription, ref byte MinimumAllowedAge, 
+        public static bool GetLicenseClassInfoByID(int LicenseClassID,
+            ref string ClassName, ref string ClassDescription, ref byte MinimumAllowedAge,
             ref byte DefaultValidityLength, ref float ClassFees)
+        {
+            SqlParameter[] parameters = new SqlParameter[]
             {
-                bool isFound = false;
+                new SqlParameter("LicenseClassID", SqlDbType.Int) {Value = LicenseClassID}
+            };
 
-                SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
+            string tmpClassName = "";
+            string tmpClassDescription = default;
+            byte tmpMinimumAllowedAge = default;
+            byte tmpDefaultValidityLength = default;
+            float tmpClassFees = default;
 
-                string query = "EXEC [dbo].[SP_GetLicenseClass] @LicenseClassID";
+            bool isFound = clsDataHelper.GetSingleRow("SP_GetLicenseClass", parameters, reader =>
+            {
+                tmpClassName = reader.GetString(reader.GetOrdinal("ClassName"));
+                tmpClassDescription = reader.GetString(reader.GetOrdinal("ClassDescription"));
+                tmpMinimumAllowedAge = reader.GetByte(reader.GetOrdinal("MinimumAllowedAge"));
+                tmpDefaultValidityLength = reader.GetByte(reader.GetOrdinal("DefaultValidityLength"));
+                tmpClassFees = (float)reader.GetDecimal(reader.GetOrdinal("ClassFees"));
+            });
 
-                SqlCommand command = new SqlCommand(query, connection);
-
-                command.Parameters.AddWithValue("@LicenseClassID", LicenseClassID);
-
-                try
-                {
-                    connection.Open();
-                    SqlDataReader reader = command.ExecuteReader();
-
-                    if (reader.Read())
-                    {
-                        // The record was found
-                        isFound = true;
-
-                        ClassName= (string)reader["ClassName"];
-                        ClassDescription = (string)reader["ClassDescription"];
-                        MinimumAllowedAge = (byte)reader["MinimumAllowedAge"];
-                        DefaultValidityLength = (byte) reader["DefaultValidityLength"];
-                        ClassFees = Convert.ToSingle(reader["ClassFees"]);
-
-                }
-                    else
-                    {
-                        // The record was not found
-                        isFound = false;
-                    }
-
-                    reader.Close();
-
-
-                }
-                catch (Exception ex)
-                {
-                    //Console.WriteLine("Error: " + ex.Message);
-                    isFound = false;
-                }
-                finally
-                {
-                    connection.Close();
-                }
-
-                return isFound;
+            if (isFound)
+            {
+                ClassName = tmpClassName;
+                ClassDescription = tmpClassDescription;
+                MinimumAllowedAge = tmpMinimumAllowedAge;
+                DefaultValidityLength = tmpDefaultValidityLength;
+                ClassFees = tmpClassFees;
             }
+            return isFound;
+        }
 
 
         public static bool GetLicenseClassInfoByClassName( string ClassName, ref int LicenseClassID,
             ref string ClassDescription, ref byte MinimumAllowedAge,
            ref byte DefaultValidityLength, ref float ClassFees)
         {
-            bool isFound = false;
-
-            SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
-
-            string query = "EXEC [dbo].[SP_GetLicenseClassByClassName] @ClassName";
-
-            SqlCommand command = new SqlCommand(query, connection);
-
-            command.Parameters.AddWithValue("@ClassName", ClassName);
-
-            try
+            SqlParameter[] parameters = new SqlParameter[]
             {
-                connection.Open();
-                SqlDataReader reader = command.ExecuteReader();
+                new SqlParameter("ClassName", SqlDbType.NVarChar) {Value = ClassName}
+            };
 
-                if (reader.Read())
-                {
-                    // The record was found
-                    isFound = true;
-                    LicenseClassID = (int)reader["LicenseClassID"];
-                    ClassDescription = (string)reader["ClassDescription"];
-                    MinimumAllowedAge = (byte)reader["MinimumAllowedAge"];
-                    DefaultValidityLength = (byte)reader["DefaultValidityLength"];
-                    ClassFees = Convert.ToSingle(reader["ClassFees"]);
+            int tmpLicenseClassID = 0;
+            string tmpClassName = "";
+            string tmpClassDescription = default;
+            byte tmpMinimumAllowedAge = default;
+            byte tmpDefaultValidityLength = default;
+            float tmpClassFees = default;
 
-                }
-                else
-                {
-                    // The record was not found
-                    isFound = false;
-                }
-
-                reader.Close();
-
-
-            }
-            catch (Exception ex)
+            bool isFound = clsDataHelper.GetSingleRow("SP_GetLicenseClassByClassName", parameters, reader =>
             {
-                //Console.WriteLine("Error: " + ex.Message);
-                isFound = false;
-            }
-            finally
-            {
-                connection.Close();
-            }
+                tmpLicenseClassID = reader.GetInt32(reader.GetOrdinal("LicenseClassID"));
+                tmpClassName = reader.GetString(reader.GetOrdinal("ClassName"));
+                tmpClassDescription = reader.GetString(reader.GetOrdinal("ClassDescription"));
+                tmpMinimumAllowedAge = reader.GetByte(reader.GetOrdinal("MinimumAllowedAge"));
+                tmpDefaultValidityLength = reader.GetByte(reader.GetOrdinal("DefaultValidityLength"));
+                tmpClassFees = (float)reader.GetDecimal(reader.GetOrdinal("ClassFees"));
+            });
 
+            if (isFound)
+            {
+                LicenseClassID = tmpLicenseClassID;
+                ClassName = tmpClassName;
+                ClassDescription = tmpClassDescription;
+                MinimumAllowedAge = tmpMinimumAllowedAge;
+                DefaultValidityLength = tmpDefaultValidityLength;
+                ClassFees = tmpClassFees;
+            }
             return isFound;
         }
 
 
 
         public static DataTable GetAllLicenseClasses()
-            {
-
-                DataTable dt = new DataTable();
-                SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
-
-                string query = "EXEC [dbo].[SP_GetLicenseClasses]";
-
-                SqlCommand command = new SqlCommand(query, connection);
-
-                try
-                {
-                    connection.Open();
-
-                    SqlDataReader reader = command.ExecuteReader();
-
-                    if (reader.HasRows)
-
-                    {
-                        dt.Load(reader);
-                    }
-
-                    reader.Close();
-
-
-                }
-
-                catch (Exception ex)
-                {
-                    // Console.WriteLine("Error: " + ex.Message);
-                }
-                finally
-                {
-                    connection.Close();
-                }
-
-                return dt;
-
-            }
+        {
+            return clsDataHelper.GetDataTable("SP_GetLicenseClasses", null);
+        }
 
         public static int AddNewLicenseClass(string ClassName, string ClassDescription,
             byte MinimumAllowedAge,byte DefaultValidityLength, float ClassFees)
         {
-            int LicenseClassID = -1;
-
-            SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
-
-            string query = @"EXEC SP_AddNewLicenseClass @ClassName,@ClassDescription,@MinimumAllowedAge, 
-            @DefaultValidityLength,@ClassFees;";
-            
-          
-
-            SqlCommand command = new SqlCommand(query, connection);
-
-            command.Parameters.AddWithValue("@ClassName", ClassName);
-            command.Parameters.AddWithValue("@ClassDescription", ClassDescription);
-            command.Parameters.AddWithValue("@MinimumAllowedAge", MinimumAllowedAge);
-            command.Parameters.AddWithValue("@DefaultValidityLength", DefaultValidityLength);
-            command.Parameters.AddWithValue("@ClassFees", ClassFees);
- 
-
-
-            try
+            SqlParameter[] parameters = new SqlParameter[]
             {
-                connection.Open();
+                new SqlParameter("ClassName", SqlDbType.NVarChar) {Value = ClassName},
+                new SqlParameter("ClassDescription", SqlDbType.NVarChar) {Value = ClassDescription},
+                new SqlParameter("MinimumAllowedAge", SqlDbType.Bit) {Value = MinimumAllowedAge},
+                new SqlParameter("DefaultValidityLength", SqlDbType.Bit) {Value = DefaultValidityLength},
+                new SqlParameter("ClassFees", SqlDbType.Decimal) {Value = ClassFees}
+            };
 
-                object result = command.ExecuteScalar();
+            object result = clsDataHelper.ExecuteScalar("SP_AddNewLicenseClass", parameters);
 
-                if (result != null && int.TryParse(result.ToString(), out int insertedID))
-                {
-                    LicenseClassID = insertedID;
-                }
-            }
-
-            catch (Exception ex)
-            {
-                //Console.WriteLine("Error: " + ex.Message);
-
-            }
-
-            finally
-            {
-                connection.Close();
-            }
-
-
-            return LicenseClassID;
-
+            return result != null ? Convert.ToInt32(result) : -1;
         }
 
         public static bool UpdateLicenseClass(int LicenseClassID, string ClassName, 
             string ClassDescription,
             byte MinimumAllowedAge, byte DefaultValidityLength, float ClassFees)
         {
-
-            int rowsAffected = 0;
-            SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
-
-            string query = @"EXEC [dbo].[SP_UpdatePerson] @ClassName,@ClassDescription,@MinimumAllowedAge, 
-            @DefaultValidityLength,@ClassFees, @LicenseClassID;";
-
-            SqlCommand command = new SqlCommand(query, connection);
-
-            command.Parameters.AddWithValue("@LicenseClassID", LicenseClassID);
-            command.Parameters.AddWithValue("@ClassName", ClassName);
-            command.Parameters.AddWithValue("@ClassDescription", ClassDescription);
-            command.Parameters.AddWithValue("@MinimumAllowedAge", MinimumAllowedAge);
-            command.Parameters.AddWithValue("@DefaultValidityLength", DefaultValidityLength);
-            command.Parameters.AddWithValue("@ClassFees", ClassFees);
-
-
-            try
+            SqlParameter[] parameter = new SqlParameter[]
             {
-                connection.Open();
-                rowsAffected = command.ExecuteNonQuery();
+                new SqlParameter("LicenseClassID", SqlDbType.Int) {Value = LicenseClassID},
+                new SqlParameter("ClassName", SqlDbType.NVarChar) {Value = ClassName},
+                new SqlParameter("ClassDescription", SqlDbType.NVarChar) {Value = ClassDescription},
+                new SqlParameter("MinimumAllowedAge", SqlDbType.Bit) {Value = MinimumAllowedAge},
+                new SqlParameter("DefaultValidityLength", SqlDbType.Bit) {Value = DefaultValidityLength},
+                new SqlParameter("ClassFees", SqlDbType.Decimal) {Value = ClassFees}
+            };
 
-            }
-            catch (Exception ex)
-            {
-                //Console.WriteLine("Error: " + ex.Message);
-                return false;
-            }
+            int rowsAffected = clsDataHelper.ExecuteNonQuery("SP_UpdatePerson", parameter);
 
-            finally
-            {
-                connection.Close();
-            }
-
-            return (rowsAffected > 0);
+            return rowsAffected > 0;
         }
-
-
     }
 }

@@ -14,176 +14,68 @@ namespace DVLD_DataAccess
     public class clsTestTypeData
     {
 
-        public static bool GetTestTypeInfoByID(int TestTypeID, 
-            ref string TestTypeTitle, ref string TestDescription ,ref float TestFees)
+        public static bool GetTestTypeInfoByID(int TestTypeID,
+            ref string TestTypeTitle, ref string TestDescription, ref float TestFees)
+        {
+
+            SqlParameter[] parameters = new SqlParameter[]
             {
-                bool isFound = false;
+                new SqlParameter("@ID", SqlDbType.Int) {Value = TestTypeID}
+            };
 
-                SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
+            string tmpTestTypeTitle = "";
+            string tmpTestDescription = "";
+            float tmpTestFees = default;
 
-                string query = "EXEC [dbo].[SP_GetTestType] @TestTypeID";
-
-                SqlCommand command = new SqlCommand(query, connection);
-
-                command.Parameters.AddWithValue("@TestTypeID", TestTypeID);
-
-                try
-                {
-                    connection.Open();
-                    SqlDataReader reader = command.ExecuteReader();
-
-                    if (reader.Read())
-                    {
-
-                        // The record was found
-                        isFound = true;
-
-                        TestTypeTitle = (string)reader["TestTypeTitle"];
-                        TestDescription = (string)reader["TestTypeDescription"];
-                        TestFees = Convert.ToSingle( reader["TestTypeFees"]);
-
-                }
-                    else
-                    {
-                        // The record was not found
-                        isFound = false;
-                    }
-
-                    reader.Close();
-
-
-                }
-                catch (Exception ex)
-                {
-                    //Console.WriteLine("Error: " + ex.Message);
-                    isFound = false;
-                }
-                finally
-                {
-                    connection.Close();
-                }
-
-                return isFound;
-            }
-
-         public static DataTable GetAllTestTypes()
+            bool isFound = clsDataHelper.GetSingleRow("SP_GetTestType", parameters, reader =>
             {
+                tmpTestTypeTitle = reader.GetString(reader.GetOrdinal("TestTypeTitle"));
+                tmpTestDescription = reader.GetString(reader.GetOrdinal("TestTypeDescription"));
+                tmpTestFees = (float)reader.GetDecimal(reader.GetOrdinal("TestTypeFees"));
+            });
 
-                DataTable dt = new DataTable();
-                SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
-
-                string query = "EXEC SP_GetAllTestTypes";
-
-                SqlCommand command = new SqlCommand(query, connection);
-
-                try
-                {
-                    connection.Open();
-
-                    SqlDataReader reader = command.ExecuteReader();
-
-                    if (reader.HasRows)
-
-                    {
-                        dt.Load(reader);
-                    }
-
-                    reader.Close();
-
-
-                }
-
-                catch (Exception ex)
-                {
-                    // Console.WriteLine("Error: " + ex.Message);
-                }
-                finally
-                {
-                    connection.Close();
-                }
-
-                return dt;
-
+            if (isFound)
+            {
+                TestTypeTitle = tmpTestTypeTitle;
+                TestDescription = tmpTestDescription;
+                TestFees = tmpTestFees;
             }
+            return isFound;
+        }
+
+        public static DataTable GetAllTestTypes()
+        {
+            return clsDataHelper.GetDataTable("SP_GetAllTestTypes", null);
+        }
 
         public static int AddNewTestType( string Title,string Description, float Fees)
         {
-            int TestTypeID = -1;
-
-            SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
-
-            string query = @"EXEC [dbo].[SP_AddNewTestType] @TestTypeTitle, @TestTypeDescription, @ApplicationFees;";
-
-            SqlCommand command = new SqlCommand(query, connection);
-
-            command.Parameters.AddWithValue("@TestTypeTitle", Title);
-            command.Parameters.AddWithValue("@TestTypeDescription", Description);
-            command.Parameters.AddWithValue("@ApplicationFees", Fees);
-
-            try
+            SqlParameter[] parameters = new SqlParameter[]
             {
-                connection.Open();
+                new SqlParameter("TestTypeTitle", SqlDbType.NVarChar) {Value = Title},
+                new SqlParameter("TestTypeDescription", SqlDbType.NVarChar) {Value = Description},
+                new SqlParameter("@ApplicationFees", SqlDbType.SmallMoney) {Value = Fees}
+            };
 
-                object result = command.ExecuteScalar();
+            object result = clsDataHelper.ExecuteScalar("SP_AddNewTestType", parameters);
 
-                if (result != null && int.TryParse(result.ToString(), out int insertedID))
-                {
-                    TestTypeID = insertedID;
-                }
-            }
-
-            catch (Exception ex)
-            {
-                //Console.WriteLine("Error: " + ex.Message);
-
-            }
-
-            finally
-            {
-                connection.Close();
-            }
-
-
-            return TestTypeID;
-
+            return result != null ? Convert.ToInt32(result) : -1;
         }
 
         public static bool UpdateTestType(int TestTypeID,string Title,string Description, float Fees)
         {
 
-            int rowsAffected = 0;
-            SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
-
-            string query = @"EXEC SP_UpdateTestType @TestTypeID, @TestTypeTitle, @TestTypeDescription, @TestTypeFees";
-
-            SqlCommand command = new SqlCommand(query, connection);
-
-            command.Parameters.AddWithValue("@TestTypeID", TestTypeID);
-            command.Parameters.AddWithValue("@TestTypeTitle", Title);
-            command.Parameters.AddWithValue("@TestTypeDescription", Description);
-            command.Parameters.AddWithValue("@TestTypeFees", Fees);
-
-            try
+            SqlParameter[] parameter = new SqlParameter[]
             {
-                connection.Open();
-                rowsAffected = command.ExecuteNonQuery();
+                new SqlParameter("TestTypeID", SqlDbType.Int) {Value = TestTypeID},
+                new SqlParameter("TestTypeTitle", SqlDbType.NVarChar) {Value = Title},
+                new SqlParameter("@TestTypeDesc", SqlDbType.NVarChar) {Value = Description},
+                new SqlParameter("@TestTypeFees", SqlDbType.SmallMoney) {Value = Fees}
+            };
 
-            }
-            catch (Exception ex)
-            {
-                //Console.WriteLine("Error: " + ex.Message);
-                return false;
-            }
+            int rowsAffected = clsDataHelper.ExecuteNonQuery("SP_UpdateTestType", parameter);
 
-            finally
-            {
-                connection.Close();
-            }
-
-            return (rowsAffected > 0);
+            return rowsAffected > 0;
         }
-
-
-
     }
 }

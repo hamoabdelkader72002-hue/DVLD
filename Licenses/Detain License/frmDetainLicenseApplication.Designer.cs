@@ -316,6 +316,7 @@
             this.ctrlDriverLicenseInfoWithFilter1.Size = new System.Drawing.Size(874, 464);
             this.ctrlDriverLicenseInfoWithFilter1.TabIndex = 185;
             this.ctrlDriverLicenseInfoWithFilter1.OnLicenseSelected += new System.Action<int>(this.ctrlDriverLicenseInfoWithFilter1_OnLicenseSelected);
+            this.ctrlDriverLicenseInfoWithFilter1.Load += new System.EventHandler(this.ctrlDriverLicenseInfoWithFilter1_Load);
             // 
             // errorProvider1
             // 

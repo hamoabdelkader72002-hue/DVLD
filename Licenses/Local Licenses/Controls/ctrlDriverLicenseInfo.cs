@@ -23,7 +23,6 @@ namespace DVLD.DriverLicense
         public ctrlDriverLicenseInfo()
         {
             InitializeComponent();
-           
         }
 
         public int LicenseID

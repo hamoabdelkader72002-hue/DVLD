@@ -13,98 +13,46 @@ namespace DVLD_DataAccess
         public enum enGendor { Male = 0, Female = 1 };
 
         public static bool GetCountryInfoByID(int ID, ref string CountryName)
+        {
+            SqlParameter[] parameters =
             {
-                bool isFound = false;
+                new SqlParameter("@CountryID", SqlDbType.Int) { Value = ID }
+            };
 
-                SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
+            string tmpCountryName = "";
 
-                string query = "exec [dbo].[SP_GetCountryInfoByID] @CountryID";
+            bool isFound = clsDataHelper.GetSingleRow("SP_GetCountryInfoByID", parameters, reader =>
+            {
+                tmpCountryName = reader.GetString(reader.GetOrdinal("CountryName"));
+            });
 
-                SqlCommand command = new SqlCommand(query, connection);
-
-                command.Parameters.AddWithValue("@CountryID", ID);
-
-                try
-                {
-                    connection.Open();
-                    SqlDataReader reader = command.ExecuteReader();
-
-                    if (reader.Read())
-                    {
-
-                        // The record was found
-                        isFound = true;
-
-                        CountryName = (string)reader["CountryName"];
-
-                    }
-                    else
-                    {
-                        // The record was not found
-                        isFound = false;
-                    }
-
-                    reader.Close();
-
-
-                }
-                catch (Exception ex)
-                {
-                    //Console.WriteLine("Error: " + ex.Message);
-                    isFound = false;
-                }
-                finally
-                {
-                    connection.Close();
-                }
-
-                return isFound;
+            if (isFound)
+            {
+                CountryName = tmpCountryName;
             }
+
+            return isFound;
+        }
+
+
 
         public static bool GetCountryInfoByName(string CountryName, ref int ID)
         {
-            bool isFound = false;
-
-            SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
-
-            string query = "exec [dbo].[SP_GetCountryInfoByName] @CountryName";
-
-            SqlCommand command = new SqlCommand(query, connection);
-
-            command.Parameters.AddWithValue("@CountryName", CountryName);
-
-            try
+            SqlParameter[] parameters =
             {
-                connection.Open();
-                SqlDataReader reader = command.ExecuteReader();
+                new SqlParameter("@CountryName", SqlDbType.NVarChar) { Value = CountryName }
+            };
 
-                if (reader.Read())
-                {
+            int tmpID = 0;
 
-                    // The record was found
-                    isFound = true;
-
-                    ID = (int)reader["CountryID"];
-
-                }
-                else
-                {
-                    // The record was not found
-                    isFound = false;
-                }
-
-                reader.Close();
-
-
-            }
-            catch (Exception ex)
+            bool isFound = clsDataHelper.GetSingleRow("SP_GetCountryInfoByName", parameters, reader =>
             {
-                //Console.WriteLine("Error: " + ex.Message);
-                isFound = false;
-            }
-            finally
+                tmpID = reader.GetInt32(reader.GetOrdinal("CountryID"));
+            });
+
+            if (isFound)
             {
-                connection.Close();
+                ID = tmpID;
             }
 
             return isFound;
@@ -112,42 +60,7 @@ namespace DVLD_DataAccess
 
         public static async Task<DataTable> GetAllCountries()
         {
-
-            DataTable dt = new DataTable();
-            SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
-
-            string query = "exec [dbo].[SP_GetAllCountries]";
-
-            SqlCommand command = new SqlCommand(query, connection);
-
-            try
-            {
-                connection.Open();
-
-                SqlDataReader reader = await command.ExecuteReaderAsync();
-
-                if (reader.HasRows)
-
-                {
-                    dt.Load(reader);
-                }
-
-                reader.Close();
-
-
-            }
-
-            catch (Exception ex)
-            {
-                // Console.WriteLine("Error: " + ex.Message);
-            }
-            finally
-            {
-                connection.Close();
-            }
-
-            return dt;
-
+            return await clsDataHelper.GetDataTableAsync("SP_GetAllCountries", null);
         }
 
     }

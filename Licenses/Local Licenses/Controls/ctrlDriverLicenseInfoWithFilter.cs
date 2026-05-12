@@ -59,7 +59,7 @@ namespace DVLD.Licenses.Controls
 
         public void LoadLicenseInfo(int LicenseID)
         {
-
+            
 
             txtLicenseID.Text = LicenseID.ToString();
             ctrlDriverLicenseInfo1.LoadInfo(LicenseID);

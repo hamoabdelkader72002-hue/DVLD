@@ -67,11 +67,11 @@ namespace DVLD_Buisness
             Mode = enMode.Update;
         }
 
-        private bool _AddNewDetainedLicense()
+        private async Task<bool> _AddNewDetainedLicense()
         {
             //call DataAccess Layer 
 
-            this.DetainID = clsDetainedLicenseData.AddNewDetainedLicense( 
+            this.DetainID = await clsDetainedLicenseData.AddNewDetainedLicense( 
                 this.LicenseID,this.DetainDate,this.FineFees,this.CreatedByUserID);
             
             return (this.DetainID != -1);
@@ -137,12 +137,12 @@ namespace DVLD_Buisness
 
         }
 
-        public bool Save()
+        public async Task<bool> Save()
         {
             switch (Mode)
             {
                 case enMode.AddNew:
-                    if (_AddNewDetainedLicense())
+                    if (await _AddNewDetainedLicense())
                     {
 
                         Mode = enMode.Update;

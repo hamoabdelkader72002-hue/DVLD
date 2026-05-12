@@ -6,162 +6,82 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using static System.Net.Mime.MediaTypeNames;
+using System.Reflection;
 
 namespace DVLD_DataAccess
 {
     public class clsApplicationData
     {
-      
 
-        public static bool GetApplicationInfoByID(int ApplicationID, 
-            ref int ApplicantPersonID, ref DateTime ApplicationDate, ref int ApplicationTypeID, 
-            ref byte ApplicationStatus,ref DateTime LastStatusDate,
+
+        public static bool GetApplicationInfoByID(int ApplicationID,
+            ref int ApplicantPersonID, ref DateTime ApplicationDate, ref int ApplicationTypeID,
+            ref byte ApplicationStatus, ref DateTime LastStatusDate,
             ref float PaidFees, ref int CreatedByUserID)
+        {
+
+            SqlParameter[] parameters =
             {
-                bool isFound = false;
+                new SqlParameter("@ID", SqlDbType.Int) { Value = ApplicationID }
+            };
 
-                SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
+            int tmpID = 0;
+            DateTime tmpApplicationDate = DateTime.Today;
+            int tmpApplicationTypeID = 0;
+            byte tmpApplicationStatus = 0;
+            DateTime tmpLastStatusDate = DateTime.Today;
+            float tmpPaidFees = default;
+            int tmpCreatedByUserID = 0;
 
-                string query = "exec [dbo].[SP_GetApplication] @ApplicationID";
+            bool isFound = clsDataHelper.GetSingleRow("SP_GetApplication", parameters, reader =>
+            {
+                tmpID = reader.GetInt32(reader.GetOrdinal("ApplicantPersonID"));
+                tmpApplicationDate = reader.GetDateTime(reader.GetOrdinal("ApplicationDate"));
+                tmpApplicationTypeID = reader.GetInt32(reader.GetOrdinal("ApplicationTypeID"));
+                tmpApplicationStatus = reader.GetByte(reader.GetOrdinal("ApplicationStatus"));
+                tmpLastStatusDate = reader.GetDateTime(reader.GetOrdinal("LastStatusDate"));
+                tmpPaidFees =(float) reader.GetDecimal(reader.GetOrdinal("PaidFees"));
+                tmpCreatedByUserID = reader.GetInt32(reader.GetOrdinal("CreatedByUserID"));
+            });
 
-                SqlCommand command = new SqlCommand(query, connection);
-
-                command.Parameters.AddWithValue("@ApplicationID", ApplicationID);
-
-                try
-                {
-                    connection.Open();
-                    SqlDataReader reader = command.ExecuteReader();
-
-                    if (reader.Read())
-                    {
-
-                        // The record was found
-                        isFound = true;
-
-                        ApplicantPersonID = (int)reader["ApplicantPersonID"];
-                        ApplicationDate = (DateTime) reader["ApplicationDate"];
-                        ApplicationTypeID = (int)reader["ApplicationTypeID"];
-                        ApplicationStatus = (byte)reader["ApplicationStatus"];
-                        LastStatusDate = (DateTime)reader["LastStatusDate"];
-                        PaidFees = Convert.ToSingle(reader["PaidFees"]);
-                        CreatedByUserID = (int)reader["CreatedByUserID"];
-
-
-                    }
-                    else
-                    {
-                        // The record was not found
-                        isFound = false;
-                    }
-
-                    reader.Close();
-
-
-                }
-                catch (Exception ex)
-                {
-                    //Console.WriteLine("Error: " + ex.Message);
-                    isFound = false;
-                }
-                finally
-                {
-                    connection.Close();
-                }
-
-                return isFound;
+            if (isFound)
+            {
+                ApplicantPersonID = tmpID;
+                ApplicationDate = tmpApplicationDate;
+                ApplicationTypeID = tmpApplicationTypeID;
+                ApplicationStatus = tmpApplicationStatus;
+                LastStatusDate = tmpLastStatusDate;
+                PaidFees = tmpPaidFees;
+                CreatedByUserID = tmpCreatedByUserID;
             }
+
+            return isFound;
+        }
 
         public static DataTable GetAllApplications()
-            {
-
-                DataTable dt = new DataTable();
-                SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
-
-                string query = "select * from ApplicationsList_View order by ApplicationDate desc";
-
-                SqlCommand command = new SqlCommand(query, connection);
-
-                try
-                {
-                    connection.Open();
-
-                    SqlDataReader reader = command.ExecuteReader();
-
-                    if (reader.HasRows)
-
-                    {
-                        dt.Load(reader);
-                    }
-
-                    reader.Close();
-
-
-                }
-
-                catch (Exception ex)
-                {
-                    // Console.WriteLine("Error: " + ex.Message);
-                }
-                finally
-                {
-                    connection.Close();
-                }
-
-                return dt;
-
-            }
+        {
+            return clsDataHelper.GetDataTable("sp_GetAllApplications", null);
+        }   
 
         public static int AddNewApplication( int ApplicantPersonID,  DateTime ApplicationDate,  int ApplicationTypeID,
              byte ApplicationStatus,  DateTime LastStatusDate,
              float PaidFees,  int CreatedByUserID)
         {
 
-            //this function will return the new person id if succeeded and -1 if not.
-            int ApplicationID = -1;
-
-            SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
-
-            string query = @"exec [dbo].[SP_AddNewApplication] @ApplicantPersonID,@ApplicationDate,@ApplicationTypeID, @ApplicationStatus,@LastStatusDate,@PaidFees,@CreatedByUserID";
-
-            SqlCommand command = new SqlCommand(query, connection);
-
-            command.Parameters.AddWithValue("ApplicantPersonID", @ApplicantPersonID);
-            command.Parameters.AddWithValue("ApplicationDate", @ApplicationDate);
-            command.Parameters.AddWithValue("ApplicationTypeID", @ApplicationTypeID);
-            command.Parameters.AddWithValue("ApplicationStatus", @ApplicationStatus);
-            command.Parameters.AddWithValue("LastStatusDate", @LastStatusDate);
-            command.Parameters.AddWithValue("PaidFees", @PaidFees);
-            command.Parameters.AddWithValue("CreatedByUserID", @CreatedByUserID);
-
-
-
-
-            try
+            SqlParameter[] parameters = new SqlParameter[]
             {
-                connection.Open();
+                new SqlParameter("PersonID", SqlDbType.Int) {Value = ApplicantPersonID},
+                new SqlParameter("ApplicationDate", SqlDbType.DateTime) {Value = ApplicationDate},
+                new SqlParameter("ApplicationTypeID", SqlDbType.Int) {Value = ApplicationTypeID},
+                new SqlParameter("ApplicationStatus", SqlDbType.TinyInt) {Value = ApplicationStatus},
+                new SqlParameter("LastStatusDate", SqlDbType.DateTime) {Value = LastStatusDate},
+                new SqlParameter("PaidFees", SqlDbType.SmallMoney) {Value = PaidFees},
+                new SqlParameter("UserID", SqlDbType.Int) {Value = CreatedByUserID},
+            };
 
-                object result = command.ExecuteScalar();
+            object result = clsDataHelper.ExecuteScalar("SP_AddNewApplication", parameters);
 
-                if (result != null && int.TryParse(result.ToString(), out int insertedID))
-                {
-                    ApplicationID = insertedID;
-                }
-            }
-
-            catch (Exception ex)
-            {
-                //Console.WriteLine("Error: " + ex.Message);
-
-            }
-
-            finally
-            {
-                connection.Close();
-            }
-
-
-            return ApplicationID;
+            return result != null ? Convert.ToInt32(result) : -1;
         }
 
 
@@ -170,226 +90,86 @@ namespace DVLD_DataAccess
              float PaidFees, int CreatedByUserID)
         {
 
-            int rowsAffected = 0;
-            SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
-
-            string query = @"Exec [dbo].[SP_UpdateApplication] @ApplicantPersonID,@ApplicationDate,@ApplicationTypeID, @ApplicationStatus,@LastStatusDate,@PaidFees,@CreatedByUserID , @ApplicationID";
-
-            SqlCommand command = new SqlCommand(query, connection);
-
-            command.Parameters.AddWithValue("@ApplicationID", ApplicationID);
-            command.Parameters.AddWithValue("ApplicantPersonID", @ApplicantPersonID);
-            command.Parameters.AddWithValue("ApplicationDate", @ApplicationDate);
-            command.Parameters.AddWithValue("ApplicationTypeID", @ApplicationTypeID);
-            command.Parameters.AddWithValue("ApplicationStatus", @ApplicationStatus);
-            command.Parameters.AddWithValue("LastStatusDate", @LastStatusDate);
-            command.Parameters.AddWithValue("PaidFees", @PaidFees);
-            command.Parameters.AddWithValue("CreatedByUserID", @CreatedByUserID);
-
-
-            try
+            SqlParameter[] parameter = new SqlParameter[]
             {
-                connection.Open();
-                rowsAffected = command.ExecuteNonQuery();
+                new SqlParameter("ApplicationID", SqlDbType.Int) {Value = ApplicationID},
+                new SqlParameter("ApplicantPersonID", SqlDbType.Int) {Value = ApplicantPersonID},
+                new SqlParameter("ApplicationDate", SqlDbType.DateTime) {Value = ApplicationDate},
+                new SqlParameter("ApplicationTypeID", SqlDbType.Int) {Value = ApplicationTypeID},
+                new SqlParameter("ApplicationStatus", SqlDbType.TinyInt) {Value = ApplicationStatus},
+                new SqlParameter("LastStatusDate", SqlDbType.DateTime) {Value = LastStatusDate},
+                new SqlParameter("PaidFees", SqlDbType.Decimal) {Value = PaidFees},
+                new SqlParameter("CreatedByUserID", SqlDbType.Int) {Value = CreatedByUserID}
+            };
 
-            }
-            catch (Exception ex)
-            {
-                //Console.WriteLine("Error: " + ex.Message);
-                return false;
-            }
+            int rowsAffected = clsDataHelper.ExecuteNonQuery("SP_UpdateApplication", parameter);
 
-            finally
-            {
-                connection.Close();
-            }
-
-            return (rowsAffected > 0);
+            return rowsAffected > 0;
         }
 
         public static bool DeleteApplication(int ApplicationID)
         {
 
-            int rowsAffected = 0;
-
-            SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
-
-            string query = @"Exec [dbo].[SP_DeleteApplication] @ApplicationID";
-
-            SqlCommand command = new SqlCommand(query, connection);
-
-            command.Parameters.AddWithValue("@ApplicationID", ApplicationID);
-
-            try
+            SqlParameter[] parameter = new SqlParameter[]
             {
-                connection.Open();
+                new SqlParameter("ApplicationID", SqlDbType.Int) {Value = ApplicationID},
+            };
 
-                rowsAffected = command.ExecuteNonQuery();
+            int rowsAffected = clsDataHelper.ExecuteNonQuery("SP_DeleteApplication", parameter);
 
-            }
-            catch (Exception ex)
-            {
-                // Console.WriteLine("Error: " + ex.Message);
-            }
-            finally
-            {
-
-                connection.Close();
-
-            }
-
-            return (rowsAffected > 0);
-
+            return rowsAffected > 0;
         }
 
         public static bool IsApplicationExist(int ApplicationID)
         {
-            bool isFound = false;
-
-            SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
-
-            string query = "exec [dbo].[SP_IsApplicationExist] @ApplicationID";
-
-            SqlCommand command = new SqlCommand(query, connection);
-
-            command.Parameters.AddWithValue("@ApplicationID", ApplicationID);
-
-            try
-            {
-                connection.Open();
-                SqlDataReader reader = command.ExecuteReader();
-
-                isFound = reader.HasRows;
-
-                reader.Close();
-            }
-            catch (Exception ex)
-            {
-                //Console.WriteLine("Error: " + ex.Message);
-                isFound = false;
-            }
-            finally
-            {
-                connection.Close();
-            }
-
-            return isFound;
+            return clsDataHelper.GetDataTable("SP_IsApplicationExist", null).HasData();
         }
 
         public static bool DoesPersonHaveActiveApplication(int PersonID, int ApplicationTypeID)
         {
-           
            //incase the ActiveApplication ID !=-1 return true.
             return (GetActiveApplicationID(PersonID, ApplicationTypeID) !=-1);
         }
 
         public static int GetActiveApplicationID(int PersonID, int ApplicationTypeID)
         {
-            int ActiveApplicationID =-1;
-
-            SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
-
-            string query = "Exec [dbo].[SP_GetActiveApplicationID] @ApplicantPersonID ,@ApplicationTypeID";
-
-            SqlCommand command = new SqlCommand(query, connection);
-
-            command.Parameters.AddWithValue("@ApplicantPersonID", PersonID);
-            command.Parameters.AddWithValue("@ApplicationTypeID", ApplicationTypeID);
-
-            try
+            SqlParameter[] parameters = new SqlParameter[]
             {
-                connection.Open();
-                object result = command.ExecuteScalar();
-             
+                new SqlParameter("ApplicantPersonID", SqlDbType.Int) {Value = PersonID},
+                new SqlParameter("ApplicationTypeID", SqlDbType.Int) {Value = ApplicationTypeID}
+            };
 
-                if (result != null && int.TryParse(result.ToString(), out int AppID))
-                {
-                    ActiveApplicationID = AppID;
-                }
-            }
-            catch (Exception ex)
-            {
-                //Console.WriteLine("Error: " + ex.Message);
-                return ActiveApplicationID;
-            }
-            finally
-            {
-                connection.Close();
-            }
+            object result = clsDataHelper.ExecuteScalar("SP_GetActiveApplicationID", parameters);
 
-            return ActiveApplicationID;
+            return result != null ? Convert.ToInt32(result) : -1;
         }
 
         public static int GetActiveApplicationIDForLicenseClass(int PersonID, int ApplicationTypeID,int LicenseClassID)
         {
-            int ActiveApplicationID = -1;
-
-            SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
-
-            string query = @"Exec [dbo].[SP_GetActiveApplicationIDForLicenseClass] @ApplicantPersonID ,@ApplicationTypeID, @LicenseClassID";
-
-            SqlCommand command = new SqlCommand(query, connection);
-
-            command.Parameters.AddWithValue("@ApplicantPersonID", PersonID);
-            command.Parameters.AddWithValue("@ApplicationTypeID", ApplicationTypeID);
-            command.Parameters.AddWithValue("@LicenseClassID", LicenseClassID);
-            try
+            SqlParameter[] parameters = new SqlParameter[]
             {
-                connection.Open();
-                object result = command.ExecuteScalar();
+                new SqlParameter("ApplicantPersonID", SqlDbType.Int) {Value = PersonID},
+                new SqlParameter("ApplicationTypeID", SqlDbType.Int) {Value = ApplicationTypeID},
+                new SqlParameter("LicenseClassID", SqlDbType.Int) {Value = LicenseClassID}
+            };
 
+            object result = clsDataHelper.ExecuteScalar("SP_GetActiveApplicationIDForLicenseClass", parameters);
 
-                if (result != null && int.TryParse(result.ToString(), out int AppID))
-                {
-                    ActiveApplicationID = AppID;
-                }
-            }
-            catch (Exception ex)
-            {
-                //Console.WriteLine("Error: " + ex.Message);
-                return ActiveApplicationID;
-            }
-            finally
-            {
-                connection.Close();
-            }
-
-            return ActiveApplicationID;
+            return result != null ? Convert.ToInt32(result) : -1;
         }
       
         public static bool UpdateStatus(int ApplicationID, short NewStatus)
         {
-
-            int rowsAffected = 0;
-            SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
-
-            string query = @"exec [dbo].[SP_UpdateStatus] @ApplicationID,@NewStatus,@LastStatusDate";
-
-            SqlCommand command = new SqlCommand(query, connection);
-
-            command.Parameters.AddWithValue("@ApplicationID", ApplicationID);
-            command.Parameters.AddWithValue("@NewStatus", NewStatus);
-            command.Parameters.AddWithValue("@LastStatusDate", DateTime.Now);
-            
-
-            try
+            SqlParameter[] parameter = new SqlParameter[]
             {
-                connection.Open();
-                rowsAffected = command.ExecuteNonQuery();
+                new SqlParameter("ApplicationID", SqlDbType.Int) {Value = ApplicationID},
+                new SqlParameter("NewStatus", SqlDbType.TinyInt) {Value = NewStatus},
+                new SqlParameter("LastStatusDate", SqlDbType.Date) {Value = DateTime.Today},
+            };
 
-            }
-            catch (Exception ex)
-            {
-                //Console.WriteLine("Error: " + ex.Message);
-                return false;
-            }
+            int rowsAffected = clsDataHelper.ExecuteNonQuery("SP_UpdateStatus", parameter);
 
-            finally
-            {
-                connection.Close();
-            }
-
-            return (rowsAffected > 0);
+            return rowsAffected > 0;
         }
 
     }

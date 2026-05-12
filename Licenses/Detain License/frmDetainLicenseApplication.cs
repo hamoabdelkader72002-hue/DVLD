@@ -27,7 +27,7 @@ namespace DVLD.Applications.Detain_License
             InitializeComponent();
         }
 
-        private void btnDetain_Click(object sender, EventArgs e)
+        private async void btnDetain_Click(object sender, EventArgs e)
         {
             if (MessageBox.Show("Are you sure you want to detain this license?", "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
             {
@@ -35,7 +35,7 @@ namespace DVLD.Applications.Detain_License
             }
 
          
-            _DetainID = ctrlDriverLicenseInfoWithFilter1.SelectedLicenseInfo.Detain(Convert.ToSingle(txtFineFees.Text), clsGlobal.CurrentUser.UserID);
+            _DetainID = await ctrlDriverLicenseInfoWithFilter1.SelectedLicenseInfo.Detain(Convert.ToSingle(txtFineFees.Text), clsGlobal.CurrentUser.UserID);
             if (_DetainID == -1)
             {
                 MessageBox.Show("Faild to Detain License", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -81,11 +81,17 @@ namespace DVLD.Applications.Detain_License
             //ToDo: make sure the license is not detained already.
           if(  ctrlDriverLicenseInfoWithFilter1.SelectedLicenseInfo.IsDetained)
             {
-                MessageBox.Show("Selected License i already detained, choose another one.", "Not allowed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Selected License is already detained, choose another one.", "Not allowed", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
-           txtFineFees.Focus();
+            if (!ctrlDriverLicenseInfoWithFilter1.SelectedLicenseInfo.IsActive)
+            {
+                MessageBox.Show("Selected License is Not Active, choose another one.", "Not allowed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            txtFineFees.Focus();
            btnDetain.Enabled = true;
         }
 
@@ -133,6 +139,11 @@ namespace DVLD.Applications.Detain_License
             {
                 errorProvider1.SetError(txtFineFees, null);
             };
+        }
+
+        private void ctrlDriverLicenseInfoWithFilter1_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

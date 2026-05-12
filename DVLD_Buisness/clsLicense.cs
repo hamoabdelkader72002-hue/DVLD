@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 using System.Diagnostics.Eventing.Reader;
+using System.Threading.Tasks;
 using System.Xml.Linq;
 using DVLD_DataAccess;
 using static System.Net.Mime.MediaTypeNames;
@@ -201,7 +202,7 @@ namespace DVLD_Buisness
             }
         }
 
-        public int Detain(float FineFees,int CreatedByUserID)
+        public async Task<int> Detain(float FineFees,int CreatedByUserID)
         {
             clsDetainedLicense detainedLicense = new clsDetainedLicense();
             detainedLicense.LicenseID = this.LicenseID;
@@ -209,7 +210,7 @@ namespace DVLD_Buisness
             detainedLicense.FineFees = Convert.ToSingle(FineFees);
             detainedLicense.CreatedByUserID = CreatedByUserID;
 
-            if (!detainedLicense.Save())
+            if (!await detainedLicense.Save())
             {
                
                 return -1;
